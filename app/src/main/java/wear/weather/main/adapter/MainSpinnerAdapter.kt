@@ -1,4 +1,4 @@
-package wear.weather
+package wear.weather.main.adapter
 
 import android.content.Context
 import android.view.View
