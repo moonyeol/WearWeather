@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import wear.weather.main.model.CurrentWeatherData
 
 interface RetrofitService {
     @GET("weather?")
@@ -12,4 +13,7 @@ interface RetrofitService {
         @Query("lon") lon: String,
         @Query("APPID") APPID: String
     ): Call<JsonObject>
+
+    @GET
+    fun getCurrentDust(): Call<JsonObject>
 }

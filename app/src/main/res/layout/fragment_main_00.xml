@@ -8,7 +8,7 @@
         android:id="@+id/iv_main_00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_selected_dot"
+        android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,68 +17,67 @@
         android:id="@+id/tv_cur_day_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_main_00"
         android:text="오늘 날짜, 현재 시각"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_00" />
+
     <TextView
+        android:id="@+id/tv_cur_weather_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_cur_weather_temp"
         android:text="날씨, 기온"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cur_day_time"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/tv_cur_day_time" />
+
     <Button
+        android:id="@+id/btn_cur_share_weather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@+id/tv_cur_weather_temp"
         android:text="오늘의 날씨를 공유해보세요"
-        android:id="@+id/btn_cur_share_weather"
-        app:layout_constraintTop_toTopOf="@+id/tv_cur_weather_temp"
         app:layout_constraintBottom_toBottomOf="@id/tv_cur_weather_temp"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_cur_weather_temp" />
+
     <TextView
+        android:id="@+id/tv_compare_yesterday_weather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="어제 날씨 비교 멘트"
-        android:id="@+id/tv_compare_yesterday_weather"
-        app:layout_constraintLeft_toRightOf="@id/tv_cur_weather_temp"
-        app:layout_constraintTop_toBottomOf="@+id/btn_cur_share_weather"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_cur_share_weather" />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/tv_week_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="이번주 날씨 멘트"
-        app:layout_constraintLeft_toRightOf="@id/tv_cur_weather_temp"
-        app:layout_constraintTop_toBottomOf="@id/tv_compare_yesterday_weather"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_compare_yesterday_weather" />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/tv_coordi"
-        app:layout_constraintLeft_toRightOf="@id/tv_cur_weather_temp"
-        android:text="코디 멘트"
-        app:layout_constraintTop_toBottomOf="@id/tv_week_weather"
-        />
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="코디 멘트"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_week_weather" />
+
+    <TextView
         android:id="@+id/tv_cur_perceived_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="일교차 체감온도"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cur_day_time"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/tv_cur_weather_temp" />
+
+
     <TextView
+        android:id="@+id/tv_cur_fine_ultra_dust"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_cur_fine_ultra_dust"
         android:text="미세먼지 / 초미세먼지"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cur_day_time"
-        />
-
+        app:layout_constraintTop_toBottomOf="@+id/tv_cur_perceived_temp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
