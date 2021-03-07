@@ -91,15 +91,15 @@ class MainFragment00 : Fragment() {
                 val body = response.body()!!
                 Log.d(TAG, "onResponse: ${body.toString()}")
                 val weather = body.get("weather").asJsonArray.get(0).asJsonObject["main"].toString()
-                val temps = body.get("main").asJsonArray.get(0)
-                val (temp, feelsLike, tempCross) = doubleArrayOf(
-                    temps.asJsonObject["temp"].asDouble,
-                    temps.asJsonObject["feels_like"].asDouble,
-                    temps.asJsonObject["temp_max"].asDouble - temps.asJsonObject["temp_min"].asDouble
+                val temps = body.get("main").asJsonObject
+                val (temp, feelsLike, tempCross) = intArrayOf(
+                    (temps.asJsonObject["temp"].asDouble - 273.15).toInt(),
+                    (temps.asJsonObject["feels_like"].asDouble - 273.15).toInt(),
+                    (temps.asJsonObject["temp_max"].asDouble - temps.asJsonObject["temp_min"].asDouble).toInt()
                 )
 
-                tvCurWeatherTemp.text = "$weather, $temp"
-                tvCurPerceivedTemp.text = "$tempCross / $feelsLike"
+                tvCurWeatherTemp.text = "날씨: $weather, 기온: $temp"
+                tvCurPerceivedTemp.text = "일교차: $tempCross / 체감온도: $feelsLike"
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -109,22 +109,29 @@ class MainFragment00 : Fragment() {
     }
 
     private fun getCurrentDust(station: String) {
-        val url =
-            "https://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=$station&dataTerm=month&pageNo=1&numOfRows=10&ServiceKey=8EalanJdJ%2Fzj%2FhGCCQYGwLK9uBqvU0RP4EalQSwvmdxC%2FJy6ygdrweLYg0C%2BC%2BsQ8YIzHVOM3DlkPOoZ%2Fnqyew%3D%3D&ver=1.3&_returnType=json/"
-//        중간에? 지점: Dnsty? 이거 GET방식이자나 요기 전까지가 BASEURL 수정수정
+
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(url)
-            .getCurrentDust()
+            .buildRetrofit(OPEN_AIR_URL)
+            .getCurrentDust(
+                stationName = station,
+                dataTerm = "DAILY",
+                pageNo = 1,
+                numOfRows = 1,
+                serviceKey = OPEN_AIR_KEY,
+                ver = "1.3",
+                returnType = "json"
+            )
+
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!
-                Log.d(TAG, "onResponse: ${body.toString()}")
+                Log.d(TAG, "미세먼지 onResponse: ${body.toString()}")
 //                tvCurFineUltraDust
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "onFailure: ")
+                Log.d(TAG, "미세먼지 onFailure: $t")
             }
         })
     }
@@ -132,8 +139,12 @@ class MainFragment00 : Fragment() {
 
     companion object {
         private const val TAG = "MainFragment00"
-        private const val OPEN_WEATHER_KEY = "9252cb0c939c8030161e7fe49d08e72f"
-        private const val OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/"
+        const val OPEN_WEATHER_KEY = "9252cb0c939c8030161e7fe49d08e72f"
+        const val OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/"
+        const val OPEN_AIR_KEY =
+            "8EalanJdJ%2Fzj%2FhGCCQYGwLK9uBqvU0RP4EalQSwvmdxC%2FJy6ygdrweLYg0C%2BC%2BsQ8YIzHVOM3DlkPOoZ%2Fnqyew%3D%3D"
+        const val OPEN_AIR_URL =
+            "https://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/"
 
     }
 }

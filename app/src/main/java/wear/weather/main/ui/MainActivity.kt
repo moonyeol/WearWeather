@@ -1,15 +1,16 @@
 package wear.weather.main.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.viewpager.widget.ViewPager
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
 import wear.weather.main.adapter.MainPagerAdapter
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: MainPagerAdapter
 
     // 서버에서 받아온 후 정렬
-    private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주")
+    private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주","위치 추가")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,16 @@ class MainActivity : AppCompatActivity() {
                     }
                     1 -> {
 
+                    }
+                    2->{
+
+                    }
+                    3 -> {
+                        val intent = Intent(applicationContext, MainAddLocationActivity::class.java)
+//                        intent.putExtra("lat",lat)
+//                        intent.putExtra("lot",lot)
+                        startActivity(intent)
+                        Log.d(TAG, "onItemSelected: ??")
                     }
                     else -> {
 
