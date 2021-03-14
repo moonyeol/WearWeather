@@ -25,6 +25,28 @@ data class CurrentWeatherData(
     @Expose
     val location: String?, // 지역
     @Expose
-    val time:String?
-
+    val time: String?
 )
+
+data class HourlyWeatherData(
+    @SerializedName("dt")
+    val time: String,
+    @SerializedName("main")
+    val weather: String,
+    @Expose
+    val pop: Double,
+    @SerializedName("temp")
+    val temp: String
+    )
+data class WeeklyWeatherData(
+    @SerializedName("dt")
+    val date: String,
+    @SerializedName("main")
+    val weather: String,
+    @SerializedName("max")
+    val maxTemp: String,
+    @SerializedName("min")
+    val minTemp: String
+)
+
+

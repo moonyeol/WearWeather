@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import wear.weather.R
-import wear.weather.main.adapter.MainAddLocationAdapter.LocationItemViewHolder
 import wear.weather.main.model.CurrentWeatherData
 
 class MainAddLocationAdapter(private val items: ArrayList<CurrentWeatherData>) :
-    RecyclerView.Adapter<LocationItemViewHolder>() {
+    RecyclerView.Adapter<MainAddLocationAdapter.LocationItemViewHolder>() {
 
     inner class LocationItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private lateinit var tvLocation: TextView
         private lateinit var tvTime: TextView
         private lateinit var tvTemp: TextView
         private lateinit var tvWeather: TextView
+
         fun bind(item: CurrentWeatherData) {
             tvLocation = itemView.findViewById(R.id.item_tv_location)
             tvTime = itemView.findViewById(R.id.item_tv_time)

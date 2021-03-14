@@ -5,7 +5,6 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +17,8 @@ import wear.weather.R
 import wear.weather.main.adapter.MainAddLocationAdapter
 import wear.weather.main.model.CurrentWeatherData
 import wear.weather.retrofit.RetrofitClient
+import wear.weather.util.OPEN_WEATHER_CUR_URL
+import wear.weather.util.OPEN_WEATHER_KEY
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,8 +42,8 @@ class MainAddLocationActivity : AppCompatActivity() {
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(MainFragment00.OPEN_WEATHER_URL)
-            .getCurrentWeather(lat, lot, MainFragment00.OPEN_WEATHER_KEY)
+            .buildRetrofit(OPEN_WEATHER_CUR_URL)
+            .getCurrentWeather(lat, lot, OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!

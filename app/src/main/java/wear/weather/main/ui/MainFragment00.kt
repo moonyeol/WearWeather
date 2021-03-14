@@ -20,6 +20,10 @@ import retrofit2.Response
 import wear.weather.R
 import wear.weather.main.model.CurrentWeatherData
 import wear.weather.retrofit.RetrofitClient
+import wear.weather.util.OPEN_AIR_KEY
+import wear.weather.util.OPEN_AIR_URL
+import wear.weather.util.OPEN_WEATHER_KEY
+import wear.weather.util.OPEN_WEATHER_CUR_URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -84,7 +88,7 @@ class MainFragment00 : Fragment() {
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(OPEN_WEATHER_URL)
+            .buildRetrofit(OPEN_WEATHER_CUR_URL)
             .getCurrentWeather(lat, lot, OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -109,7 +113,6 @@ class MainFragment00 : Fragment() {
     }
 
     private fun getCurrentDust(station: String) {
-
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
             .buildRetrofit(OPEN_AIR_URL)
@@ -139,12 +142,7 @@ class MainFragment00 : Fragment() {
 
     companion object {
         private const val TAG = "MainFragment00"
-        const val OPEN_WEATHER_KEY = "9252cb0c939c8030161e7fe49d08e72f"
-        const val OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/"
-        const val OPEN_AIR_KEY =
-            "8EalanJdJ%2Fzj%2FhGCCQYGwLK9uBqvU0RP4EalQSwvmdxC%2FJy6ygdrweLYg0C%2BC%2BsQ8YIzHVOM3DlkPOoZ%2Fnqyew%3D%3D"
-        const val OPEN_AIR_URL =
-            "https://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/"
+
 
     }
 }

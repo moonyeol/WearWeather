@@ -24,4 +24,12 @@ interface RetrofitService {
         @Query("ver") ver:String,
         @Query("_returnType") returnType:String
     ): Call<JsonObject>
+
+    @GET("onecall?")
+    fun getHourlyWeather(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("exclude") exclude: String,
+        @Query("APPID") APPID: String
+    ):Call<JsonObject>
 }
