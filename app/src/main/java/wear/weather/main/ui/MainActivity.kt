@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         var pm10Value: Int = 0
 
         var no2Grade: Int = 0
-        var pm2_5Grade: Int = -1
+        var pm2_5Grade: Int = 0
         var pm10Grade: Int = 0
     }
 }

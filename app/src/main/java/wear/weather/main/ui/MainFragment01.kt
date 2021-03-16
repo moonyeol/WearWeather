@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ import wear.weather.main.adapter.MainHourlyWeatherAdapter
 import wear.weather.main.adapter.MainWeeklyWeatherAdapter
 import wear.weather.main.model.HourlyWeatherData
 import wear.weather.main.model.WeeklyWeatherData
+import wear.weather.main.ui.MainActivity.Companion.pm2_5Value
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_WEATHER_HOURLY_WEEKLY_URL
 import wear.weather.util.OPEN_WEATHER_KEY
@@ -32,6 +34,8 @@ class MainFragment01 : Fragment() {
 
     private lateinit var recyclerHourlyWeather: RecyclerView
     private lateinit var recyclerWeeklyWeather: RecyclerView
+    private lateinit var tvFineDustValue: TextView
+    private lateinit var tvUvValue: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +47,8 @@ class MainFragment01 : Fragment() {
 
         recyclerHourlyWeather = rootView.findViewById(R.id.recycler_hourly_weather)
         recyclerWeeklyWeather = rootView.findViewById(R.id.recycler_weekly_weather)
+        tvFineDustValue = rootView.findViewById(R.id.tv_fine_dust_value)
+        tvUvValue = rootView.findViewById(R.id.tv_uv_value)
 
         recyclerHourlyWeather.layoutManager =
             LinearLayoutManager(this@MainFragment01.context, RecyclerView.HORIZONTAL, false)
@@ -57,6 +63,8 @@ class MainFragment01 : Fragment() {
         val location = getCurrentLocation()
         getHourlyWeather(location.latitude.toString(), location.longitude.toString())
         getWeeklyWeather(location.latitude.toString(), location.longitude.toString())
+        tvFineDustValue.text = pm2_5Value.toString()
+
     }
 
     @SuppressLint("MissingPermission")
@@ -81,6 +89,13 @@ class MainFragment01 : Fragment() {
                 val hourlyJsonArr = body.get("hourly").asJsonArray
                 for (i in 0 until 25 step 3) {
                     val hourlyWeather = hourlyJsonArr[i]
+
+                    // 자외선 습도 풍속
+                    if (i==0){
+                        tvUvValue.text = hourlyWeather.asJsonObject["uvi"].asString
+                    }
+
+
                     val dt = hourlyWeather.asJsonObject["dt"].asLong
                     val simpleDateFormat = SimpleDateFormat("HH")
                     val time = if (i == 0) "지금" else simpleDateFormat.format(Date(dt * 1000))
