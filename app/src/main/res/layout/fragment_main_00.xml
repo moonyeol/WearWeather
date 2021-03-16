@@ -72,10 +72,9 @@
 
 
     <TextView
-        android:id="@+id/tv_cur_fine_ultra_dust"
+        android:id="@+id/tv_cur_dust_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="미세먼지 / 초미세먼지"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_cur_perceived_temp" />
 

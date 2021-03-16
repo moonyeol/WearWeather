@@ -47,6 +47,7 @@ dependencies {
     def retrofitVer = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVer"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVer"
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     def okhttpVer = "3.14.9"
     implementation "com.squareup.okhttp3:okhttp:$okhttpVer"
 

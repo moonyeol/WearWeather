@@ -2,13 +2,11 @@ package wear.weather.main.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -18,12 +16,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
-import wear.weather.main.model.CurrentWeatherData
+import wear.weather.main.ui.MainActivity.Companion.pm10Value
+import wear.weather.main.ui.MainActivity.Companion.pm2_5Grade
+import wear.weather.main.ui.MainActivity.Companion.pm2_5Value
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_AIR_KEY
-import wear.weather.util.OPEN_AIR_URL
-import wear.weather.util.OPEN_WEATHER_KEY
 import wear.weather.util.OPEN_WEATHER_CUR_URL
+import wear.weather.util.OPEN_WEATHER_KEY
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +32,8 @@ class MainFragment00 : Fragment() {
     private lateinit var tvWeekWeather: TextView
     private lateinit var tvCoordi: TextView
     private lateinit var tvCurPerceivedTemp: TextView
-    private lateinit var tvCurFineUltraDust: TextView
+    private lateinit var tvCurDustGrade: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +48,7 @@ class MainFragment00 : Fragment() {
         tvWeekWeather = rootView.findViewById(R.id.tv_week_weather)
         tvCoordi = rootView.findViewById(R.id.tv_coordi)
         tvCurPerceivedTemp = rootView.findViewById(R.id.tv_cur_perceived_temp)
-        tvCurFineUltraDust = rootView.findViewById(R.id.tv_cur_fine_ultra_dust)
+        tvCurDustGrade = rootView.findViewById(R.id.tv_cur_dust_grade)
         return rootView
     }
 
@@ -60,13 +59,9 @@ class MainFragment00 : Fragment() {
             location.latitude.toString(),
             location.longitude.toString()
         )
-        val geoCoder = Geocoder(activity!!.applicationContext, Locale.getDefault())
-        val addresses = geoCoder.getFromLocation(curLat.toDouble(), curLot.toDouble(), 7)
-        val address = addresses[0]
-        val station = address.subLocality
         getTime()
         getCurrentWeather(curLat, curLot)
-        getCurrentDust(station)
+        tvCurDustGrade.text = pm2_5Grade.toString()
     }
 
     @SuppressLint("MissingPermission")
@@ -108,33 +103,6 @@ class MainFragment00 : Fragment() {
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "onFailure: ")
-            }
-        })
-    }
-
-    private fun getCurrentDust(station: String) {
-        val res: Call<JsonObject> = RetrofitClient
-            .getInstance()
-            .buildRetrofit(OPEN_AIR_URL)
-            .getCurrentDust(
-                stationName = station,
-                dataTerm = "DAILY",
-                pageNo = 1,
-                numOfRows = 1,
-                serviceKey = OPEN_AIR_KEY,
-                ver = "1.3",
-                returnType = "json"
-            )
-
-        res.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                val body = response.body()!!
-                Log.d(TAG, "미세먼지 onResponse: ${body.toString()}")
-//                tvCurFineUltraDust
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "미세먼지 onFailure: $t")
             }
         })
     }

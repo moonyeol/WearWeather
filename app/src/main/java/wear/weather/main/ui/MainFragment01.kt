@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -111,7 +110,6 @@ class MainFragment01 : Fragment() {
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!
-
                 // 날짜는 인덱스 별로 1일 단위
                 val weeklyJsonArr = body.get("daily").asJsonArray
                 for (i in 0 until 6) {
@@ -156,7 +154,6 @@ class MainFragment01 : Fragment() {
                 Log.d(TAG, "onFailure: ")
             }
         })
-
     }
 
     companion object {

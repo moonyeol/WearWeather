@@ -37,7 +37,8 @@ data class HourlyWeatherData(
     val pop: Double,
     @SerializedName("temp")
     val temp: String
-    )
+)
+
 data class WeeklyWeatherData(
     @SerializedName("dt")
     val date: String,
@@ -49,4 +50,12 @@ data class WeeklyWeatherData(
     val minTemp: String
 )
 
+data class CurDustData(
+    @SerializedName("no2")
+    val no2: Double,
+    @SerializedName("pm2_5")
+    val pm2_5: Int,
+    @SerializedName("pm10")
+    val pm10: Int
+)
 

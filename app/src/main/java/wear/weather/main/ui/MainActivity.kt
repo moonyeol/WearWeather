@@ -1,26 +1,46 @@
 package wear.weather.main.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
 import wear.weather.main.adapter.MainPagerAdapter
+import wear.weather.main.model.CurDustData
+import wear.weather.retrofit.RetrofitClient
+import wear.weather.util.OPEN_AIR_CUR_DUST_URL
+import wear.weather.util.OPEN_WEATHER_HOURLY_WEEKLY_URL
+import wear.weather.util.OPEN_WEATHER_KEY
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPagerAdapter: MainPagerAdapter
 
     // 서버에서 받아온 후 정렬
-    private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주","위치 추가")
+    private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주", "위치 추가")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +52,15 @@ class MainActivity : AppCompatActivity() {
         binding.mainSpinner.adapter = spinnerAdapter
         setSpinnerEvent()
         viewPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        binding.mainViewPager.adapter = viewPagerAdapter
+
         binding.mainTabLayout.setupWithViewPager(binding.mainViewPager, true)
         permissionCheck()
+
+        val location = getCurrentLocation()
+        val coder = Geocoder(this, Locale.getDefault())
+        val list = coder.getFromLocation(location.latitude, location.longitude, 1)
+        getCurDust(list[0].subLocality)
+
     }
 
     private fun setSpinnerEvent() {
@@ -54,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     1 -> {
 
                     }
-                    2->{
+                    2 -> {
 
                     }
                     3 -> {
@@ -65,16 +91,53 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "onItemSelected: ??")
                     }
                     else -> {
-
                     }
                 }
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentLocation(): Location {
+        val locationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
+    }
+
+    private fun getCurDust(stationName: String) {
+        val res: Call<JsonObject> = RetrofitClient
+            .getInstance()
+            .buildRetrofit(OPEN_AIR_CUR_DUST_URL)
+            .getCurDust(stationName)
+        res.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                val body = response.body()!!
+                val items = body["response"].asJsonObject["body"].asJsonObject["items"].asJsonArray[0].asJsonObject
+
+                no2Value = items["no2Value"].asDouble
+                pm2_5Value = items["pm25Value"].asInt
+                pm10Value = items["pm10Value"].asInt
+
+                no2Grade = items["no2Grade"].asInt
+                pm2_5Grade = items["pm25Grade"].asInt
+                pm10Grade = items["pm10Grade"].asInt
+
+                // 추후 수정 필요
+                // 미세먼지 데이터를 넣기 위함인데
+                // 스레드 관리로 하자
+                // 어질어질,,,
+                binding.mainViewPager.adapter = viewPagerAdapter
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "MainFailure: $stationName")
+                t.printStackTrace()
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -120,6 +183,12 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
         private const val GPS_CHECK = 1000
+        var no2Value: Double = 0.0
+        var pm2_5Value: Int = 0
+        var pm10Value: Int = 0
 
+        var no2Grade: Int = 0
+        var pm2_5Grade: Int = -1
+        var pm10Grade: Int = 0
     }
 }
