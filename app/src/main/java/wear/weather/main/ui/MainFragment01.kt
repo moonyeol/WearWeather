@@ -1,11 +1,15 @@
 package wear.weather.main.ui
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +33,7 @@ import wear.weather.util.OPEN_WEATHER_KEY
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class MainFragment01 : Fragment() {
 
@@ -42,6 +47,8 @@ class MainFragment01 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         val rootView: ViewGroup =
             inflater.inflate(R.layout.fragment_main_01, container, false) as ViewGroup
 
@@ -91,11 +98,9 @@ class MainFragment01 : Fragment() {
                     val hourlyWeather = hourlyJsonArr[i]
 
                     // 자외선 습도 풍속
-                    if (i==0){
+                    if (i == 0) {
                         tvUvValue.text = hourlyWeather.asJsonObject["uvi"].asString
                     }
-
-
                     val dt = hourlyWeather.asJsonObject["dt"].asLong
                     val simpleDateFormat = SimpleDateFormat("HH")
                     val time = if (i == 0) "지금" else simpleDateFormat.format(Date(dt * 1000))

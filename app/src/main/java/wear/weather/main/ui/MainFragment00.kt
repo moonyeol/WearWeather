@@ -9,47 +9,32 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
-import wear.weather.main.ui.MainActivity.Companion.pm10Value
-import wear.weather.main.ui.MainActivity.Companion.pm2_5Grade
-import wear.weather.main.ui.MainActivity.Companion.pm2_5Value
+import wear.weather.databinding.FragmentMain00Binding
+import wear.weather.main.ui.MainActivity.Companion.pm10Grade
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_WEATHER_CUR_URL
 import wear.weather.util.OPEN_WEATHER_KEY
+import wear.weather.util.toTemp
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainFragment00 : Fragment() {
-    private lateinit var tvCurDayTime: TextView
-    private lateinit var tvCurWeatherTemp: TextView
-    private lateinit var tvCompareYesterdayWeather: TextView
-    private lateinit var tvWeekWeather: TextView
-    private lateinit var tvCoordi: TextView
-    private lateinit var tvCurPerceivedTemp: TextView
-    private lateinit var tvCurDustGrade: TextView
-
+    private lateinit var binding: FragmentMain00Binding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView: ViewGroup =
-            inflater.inflate(R.layout.fragment_main_00, container, false) as ViewGroup
-        tvCurDayTime = rootView.findViewById(R.id.tv_cur_day_time)
-        tvCurWeatherTemp = rootView.findViewById(R.id.tv_cur_weather_temp)
-        tvCompareYesterdayWeather = rootView.findViewById(R.id.tv_compare_yesterday_weather)
-        tvWeekWeather = rootView.findViewById(R.id.tv_week_weather)
-        tvCoordi = rootView.findViewById(R.id.tv_coordi)
-        tvCurPerceivedTemp = rootView.findViewById(R.id.tv_cur_perceived_temp)
-        tvCurDustGrade = rootView.findViewById(R.id.tv_cur_dust_grade)
-        return rootView
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_00, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,9 +44,9 @@ class MainFragment00 : Fragment() {
             location.latitude.toString(),
             location.longitude.toString()
         )
-        getTime()
+//        getTime()
         getCurrentWeather(curLat, curLot)
-        tvCurDustGrade.text = pm2_5Grade.toString()
+        binding.tvCurFineDustGrade.text = pm10Grade
     }
 
     @SuppressLint("MissingPermission")
@@ -71,14 +56,12 @@ class MainFragment00 : Fragment() {
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
     }
 
-    private fun getTime() {
+    /*private fun getTime() {
         val now = System.currentTimeMillis()
         val mDate = Date(now)
         val simpleDate = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val time = simpleDate.format(mDate)
-
-        tvCurDayTime.text = time
-    }
+    }*/
 
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
@@ -91,14 +74,17 @@ class MainFragment00 : Fragment() {
                 Log.d(TAG, "onResponse: ${body.toString()}")
                 val weather = body.get("weather").asJsonArray.get(0).asJsonObject["main"].toString()
                 val temps = body.get("main").asJsonObject
-                val (temp, feelsLike, tempCross) = intArrayOf(
+                val (temp, feelsLike, tempMax, tempMin) = intArrayOf(
                     (temps.asJsonObject["temp"].asDouble - 273.15).toInt(),
                     (temps.asJsonObject["feels_like"].asDouble - 273.15).toInt(),
-                    (temps.asJsonObject["temp_max"].asDouble - temps.asJsonObject["temp_min"].asDouble).toInt()
+                    (temps.asJsonObject["temp_max"].asDouble - 273.15).toInt(),
+                    (temps.asJsonObject["temp_min"].asDouble - 273.15).toInt()
                 )
-
-                tvCurWeatherTemp.text = "날씨: $weather, 기온: $temp"
-                tvCurPerceivedTemp.text = "일교차: $tempCross / 체감온도: $feelsLike"
+                binding.tvCurPerceivedTemp.text = toTemp(feelsLike)
+                binding.tvCurTemp.text = toTemp(temp)
+                binding.tvCurMaxMinTemp.text = "${toTemp(tempMax)} / ${toTemp(tempMin)}"
+//                tvCurWeatherTemp.text = "날씨: $weather, 기온: $temp"
+//                tvCurPerceivedTemp.text = "일교차: $tempCross / 체감온도: $feelsLike"
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {

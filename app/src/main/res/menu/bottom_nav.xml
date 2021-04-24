@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_first"
+        android:icon="@drawable/ic_first"
+        android:title="First" />
+    <item
+        android:id="@+id/menu_second"
+        android:icon="@drawable/ic_second"
+        android:title="Second" />
+    <item
+        android:id="@+id/menu_third"
+        android:icon="@drawable/ic_third"
+        android:title="Third" />
+    <item
+        android:id="@+id/menu_fourth"
+        android:icon="@drawable/ic_fourth"
+        android:title="Fouth" />
+    <item
+        android:id="@+id/menu_fifth"
+        android:icon="@drawable/ic_fifth"
+        android:title="Fifth" />
+</menu>
