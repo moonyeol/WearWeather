@@ -2,6 +2,7 @@ package wear.weather.main.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -17,6 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.FragmentMain00Binding
+import wear.weather.detail.ui.DetailActivity
 import wear.weather.main.ui.MainActivity.Companion.pm10Grade
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_WEATHER_CUR_URL
@@ -34,16 +36,23 @@ class MainFragment00 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_00, container, false)
+
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val location = getCurrentLocation()
-        val (curLat, curLot) = arrayListOf<String>(
+        val (curLat, curLot) = arrayListOf(
             location.latitude.toString(),
             location.longitude.toString()
         )
+        binding.btnShowDetail.setOnClickListener {
+            val intent = Intent(activity!!.applicationContext,DetailActivity::class.java)
+            intent.putExtra("lat",location.latitude.toString())
+            intent.putExtra("lot",location.longitude.toString())
+            startActivity(intent)
+        }
 //        getTime()
         getCurrentWeather(curLat, curLot)
         binding.tvCurFineDustGrade.text = pm10Grade
@@ -71,7 +80,7 @@ class MainFragment00 : Fragment() {
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!
-                Log.d(TAG, "onResponse: ${body.toString()}")
+                Log.d(TAG, "onResponse: $body")
                 val weather = body.get("weather").asJsonArray.get(0).asJsonObject["main"].toString()
                 val temps = body.get("main").asJsonObject
                 val (temp, feelsLike, tempMax, tempMin) = intArrayOf(
@@ -80,6 +89,10 @@ class MainFragment00 : Fragment() {
                     (temps.asJsonObject["temp_max"].asDouble - 273.15).toInt(),
                     (temps.asJsonObject["temp_min"].asDouble - 273.15).toInt()
                 )
+                Log.d(TAG, "onResponse: $weather")
+                when(weather){
+                    // clear, clouds, rain, snow, thunderstorm, drizzle, atmosphere, extreme, additional
+                }
                 binding.tvCurPerceivedTemp.text = toTemp(feelsLike)
                 binding.tvCurTemp.text = toTemp(temp)
                 binding.tvCurMaxMinTemp.text = "${toTemp(tempMax)} / ${toTemp(tempMin)}"

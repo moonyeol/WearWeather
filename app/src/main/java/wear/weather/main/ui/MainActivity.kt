@@ -48,14 +48,15 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
 
+
         val spinnerAdapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         binding.mainSpinner.adapter = spinnerAdapter
-
         setSpinnerEvent()
+
+
         checkPermissions()
         setBottomNav()
-
     }
 
     private fun setBottomNav() {
@@ -75,12 +76,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_second -> {
+                    mainFragment01 = MainFragment01()
                     fragmentManager.beginTransaction()
                         .replace(R.id.main_frame_layout, mainFragment01).commit()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.menu_third
                 -> {
+
                     fragmentManager.beginTransaction()
                         .replace(R.id.main_frame_layout, mainFragment00).commit()
                     return@setOnNavigationItemSelectedListener true
