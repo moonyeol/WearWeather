@@ -20,6 +20,7 @@ import wear.weather.main.adapter.MainWeeklyWeatherAdapter
 import wear.weather.main.model.HourlyWeatherData
 import wear.weather.main.model.WeeklyWeatherData
 import wear.weather.main.ui.MainActivity
+import wear.weather.main.ui.MainActivity.Companion.currentPhotoPath
 import wear.weather.main.ui.MainFragment01
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_WEATHER_HOURLY_WEEKLY_URL

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/img_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#ffffff"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:backgroundTint="#ffffff"
+            android:text="다음"
+            android:textColor="#aad2ff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_img_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="이미지 수정"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ib_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:backgroundTint="#ffffff"
+            android:src="@drawable/ic_cancel"
+            android:textColor="#aad2ff"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_edit_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="자르기"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/ib_save_changed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_save_change"
+            android:visibility="gone" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/optionNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemBackground="@color/blackAlpha"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/option_img_nav_menu" />
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/imageDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:transitionName="@string/transition_image"
+        app:layout_constraintBottom_toTopOf="@+id/optionNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_toolbar" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/optionNavigation"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,8 @@ import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.FragmentMain00Binding
 import wear.weather.detail.ui.DetailActivity
+import wear.weather.main.ui.MainActivity.Companion.lat
+import wear.weather.main.ui.MainActivity.Companion.lot
 import wear.weather.main.ui.MainActivity.Companion.pm10Grade
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_WEATHER_CUR_URL
@@ -42,35 +44,24 @@ class MainFragment00 : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val location = getCurrentLocation()
+
         val (curLat, curLot) = arrayListOf(
-            location.latitude.toString(),
-            location.longitude.toString()
+            lat.toString(),
+            lot.toString()
         )
         binding.btnShowDetail.setOnClickListener {
-            val intent = Intent(activity!!.applicationContext,DetailActivity::class.java)
-            intent.putExtra("lat",location.latitude.toString())
-            intent.putExtra("lot",location.longitude.toString())
+            val intent = Intent(activity!!.applicationContext, DetailActivity::class.java)
+            intent.putExtra("lat", lat.toString())
+            intent.putExtra("lot", lot.toString())
             startActivity(intent)
         }
-//        getTime()
         getCurrentWeather(curLat, curLot)
         binding.tvCurFineDustGrade.text = pm10Grade
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocation(): Location {
-        val locationManager =
-            activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
+    fun setTvCurFineDustGrade() {
+        binding.tvCurFineDustGrade.text = pm10Grade
     }
-
-    /*private fun getTime() {
-        val now = System.currentTimeMillis()
-        val mDate = Date(now)
-        val simpleDate = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-        val time = simpleDate.format(mDate)
-    }*/
 
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
@@ -90,7 +81,7 @@ class MainFragment00 : Fragment() {
                     (temps.asJsonObject["temp_min"].asDouble - 273.15).toInt()
                 )
                 Log.d(TAG, "onResponse: $weather")
-                when(weather){
+                when (weather) {
                     // clear, clouds, rain, snow, thunderstorm, drizzle, atmosphere, extreme, additional
                 }
                 binding.tvCurPerceivedTemp.text = toTemp(feelsLike)
