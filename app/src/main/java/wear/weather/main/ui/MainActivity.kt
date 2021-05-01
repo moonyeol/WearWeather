@@ -28,7 +28,7 @@ import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.upload.ui.ImageDisplayActivity
+import wear.weather.post.ui.ImageDisplayActivity
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import java.util.*
 

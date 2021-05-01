@@ -31,13 +31,13 @@
         <activity android:name=".detail.ui.DetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-        <activity android:name=".upload.ui.ImageDisplayActivity"
+        <activity android:name=".post.ui.ImageDisplayActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-        <activity android:name=".upload.ui.Rotate_Crop_Activity"
+        <activity android:name=".post.ui.Rotate_Crop_Activity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-        <activity android:name=".upload.ui.Tune_Activity"
+        <activity android:name=".post.ui.Tune_Activity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
     </application>

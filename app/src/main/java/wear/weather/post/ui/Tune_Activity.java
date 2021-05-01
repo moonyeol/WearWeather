@@ -1,4 +1,4 @@
-package wear.weather.upload.ui;
+package wear.weather.post.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
