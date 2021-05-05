@@ -45,7 +45,6 @@
             android:layout_gravity="start"
             android:backgroundTint="#ffffff"
             android:src="@drawable/ic_cancel"
-            android:onClick="onClick"
             android:textColor="#aad2ff"
             android:textStyle="bold"
             android:visibility="gone" />

@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         binding.mainSpinner.adapter = spinnerAdapter
         setSpinnerEvent()
-
         checkPermissions()
 
         if (isFineLocationPermissionChecked) {

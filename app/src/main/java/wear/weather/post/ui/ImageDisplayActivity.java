@@ -257,14 +257,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
         return bytes;
     }
 
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ib_cancel:
-                displayMode();
-                break;
-
-        }
-    }
 
     private void initializeBitmap() {
         final float targetW = getIntent().getExtras().getInt("width");
