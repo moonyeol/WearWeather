@@ -17,268 +17,156 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
-import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.bumptech.glide.Glide;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import wear.weather.R;
+import wear.weather.databinding.ActivityImageDisplayBinding;
 import wear.weather.main.ui.MainActivity;
 
 public class ImageDisplayActivity extends AppCompatActivity {
+    private final static String TAG = "DEBUG_BOTTOM_NAV_UTIL";
+    private ActivityImageDisplayBinding binding;
 
-    static Bitmap bm = BitmapFactory.decodeFile(MainActivity.currentPhotoPath);
-    static float vH = 0, vW = 0;
-    static BitmapFactory.Options bmOptions;
+    static float vH = 0;
+    static float vW = 0;
     float cont = 1f;
     float bright = 0f;
     float sat = 1f;
-
-    private final static String TAG = "DEBUG_BOTTOM_NAV_UTIL";
-
-    private Context context;
-    static PhotoView imageDisplay;
-    static CropImageView cropImageView;
-    static Toolbar imgToolbar;
-    static ImageButton ibCancel;
-    static ImageButton ibSaveChanged;
-    static Button btnNext;
-    static TextView tvImgEdit;
-    static TextView tvEditName;
-    static SeekBar seekBarBrightness;
-    static SeekBar seekBarContrast;
-    static SeekBar seekBarSaturation;
-    static SeekBar seekBarRotate;
-    static BottomNavigationView optionNavigationView;
     static float iHeight = 0;
-
     static String editStatus = "";
+
+    static BitmapFactory.Options bmOptions;
+    static Bitmap bm = BitmapFactory.decodeFile(MainActivity.currentPhotoPath);
+    private Context context;
 
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_image_display);
+        binding.setActivity(this);
 
-        View decorView = getWindow().getDecorView();
-        // Hide the status bar.
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-
-        setContentView(R.layout.activity_image__display);
         context = this;
-        imgToolbar = findViewById(R.id.img_toolbar);
-        imageDisplay = findViewById(R.id.imageDisplay);
-        cropImageView = findViewById(R.id.cropImageView);
-        ibCancel = findViewById(R.id.ib_cancel);
-        ibSaveChanged = findViewById(R.id.ib_save_changed);
-        btnNext = findViewById(R.id.btn_next);
-        tvImgEdit = findViewById(R.id.tv_img_edit);
-        tvEditName = findViewById(R.id.tv_edit_name);
-        seekBarBrightness = findViewById(R.id.seekBar_brightness);
-        seekBarContrast = findViewById(R.id.seekBar_contrast);
-        seekBarSaturation = findViewById(R.id.seekBar_saturation);
-        seekBarRotate = findViewById(R.id.seekBar_rotate);
-
-        imgToolbar.setNavigationIcon(R.drawable.ic_back);
-        imgToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
 
-        final float targetW = getIntent().getExtras().getInt("width");
-        final float targetH = getIntent().getExtras().getInt("height");
+        binding.imgToolbar.setNavigationIcon(R.drawable.ic_back);
+        binding.imgToolbar.setNavigationOnClickListener(v-> finish());
 
-        // Get the dimensions of the bitmap
-        bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(MainActivity.currentPhotoPath, bmOptions);
-        float photoW = bmOptions.outWidth;
-        float photoH = bmOptions.outHeight;
-        {
-            vH = targetH * (0.89f);
-            vW = (targetH * (0.89f) / (bm.getHeight())) * (bm.getWidth());
-            if (vW > targetW) {
-                vW = targetW;
-                vH = (targetW / (bm.getWidth())) * (bm.getHeight());
-            }
-        }
+        initializeBitmap();
 
-        // Determine how much to scale down the image
-        float scaleFactor = Math.min(photoW / vW, photoH / vH);
+        setImageDisplay();
 
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = (int) scaleFactor;
-        bmOptions.inPurgeable = true;
-        bm = rotImage(BitmapFactory.decodeFile(MainActivity.currentPhotoPath, bmOptions));
-        bmOptions.inJustDecodeBounds = true;
-        iHeight = bmOptions.outHeight;
-
-        //set scaled image to imageDisplay
-        imageDisplay.setImageBitmap(bm);
-
-
-        optionNavigationView = (BottomNavigationView) findViewById(R.id.optionNavigation);
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) optionNavigationView.getChildAt(0);
-        try {//Set shifting mode of bottom navigation view as false to see all titles
-            Field shiftingMode = menuView.getClass().getDeclaredField("mShiftingMode");
-            shiftingMode.setAccessible(true);
-            shiftingMode.setBoolean(menuView, false);
-            shiftingMode.setAccessible(false);
-            for (int i = 0; i < menuView.getChildCount(); i++) {
-                BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
-                item.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-                // Set once again checked value, so view will be updated
-                item.setChecked(item.getItemData().isChecked());
-            }
-        } catch (NoSuchFieldException e) {
-            Log.d(TAG, "Unable to get shift mode field");
-        } catch (IllegalAccessException e) {
-            Log.d(TAG, "Unable to change value of shift mode");
-        }
-        ibCancel.setOnClickListener(new View.OnClickListener() {
+        binding.ibCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 displayMode();
             }
         });
-
-        ibSaveChanged.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (editStatus.equals("cut") || editStatus.equals("rotate") || editStatus.equals("reverse")) {
-                        saveBitmap();
-                        if (editStatus.equals("cut")) {
-                            cropImageView.setImageBitmap(bm);
-                        }
-                    } else {
-                        saveBitmap();
-                    }
-                    editStatus = "";
+        binding.ibCancel.setOnClickListener(v -> displayMode());
+        binding.ibSaveChanged.setOnClickListener(v -> {
+                    saveBitmap();
                     displayMode();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(context, UploadActivity.class);
-                    intent.putExtra("bm",bm);
-                    startActivity(intent);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        );
+        binding.btnNext.setOnClickListener(v -> {
+            byte[] imgByteArr = bitmapToByteArr();
+            Intent intent = new Intent(context, UploadActivity.class);
+            intent.putExtra("bm", imgByteArr);
+            startActivity(intent);
         });
 
+        binding.optionNavigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+
+                case R.id.action_adjustment:
+                    editMode("adjustment");
+                    editStatus = "cut";
+                    binding.tvEditName.setText("자르기");
+
+                    break;
+                case R.id.action_control:
+                    editMode("control");
+                    editStatus = "brightness";
+                    binding.tvEditName.setText("밝기");
+                    break;
+
+                case R.id.action_brightness:
+                    editStatus = "brightness";
+                    binding.seekBarBrightness.setVisibility(View.VISIBLE);
+                    binding.seekBarContrast.setVisibility(View.GONE);
+                    binding.seekBarSaturation.setVisibility(View.GONE);
+                    binding.tvEditName.setText("밝기");
+                    break;
+                case R.id.action_contrast:
+                    editStatus = "contrast";
+                    binding.seekBarBrightness.setVisibility(View.GONE);
+                    binding.seekBarContrast.setVisibility(View.VISIBLE);
+                    binding.seekBarSaturation.setVisibility(View.GONE);
+                    binding.tvEditName.setText("대조");
+                    break;
+                case R.id.action_saturation:
+                    editStatus = "saturation";
+                    binding.seekBarBrightness.setVisibility(View.GONE);
+                    binding.seekBarContrast.setVisibility(View.GONE);
+                    binding.seekBarSaturation.setVisibility(View.VISIBLE);
+                    binding.tvEditName.setText("채도");
+                    break;
+                case R.id.action_cut:
+                    editStatus = "cut";
+                    setCropImageView();
+                    binding.seekBarRotate.setVisibility(View.GONE);
+                    binding.tvEditName.setText("자르기");
+                    break;
+                case R.id.action_rotate:
+                    editStatus = "rotate";
+                    /*if (editStatus.equals("cut")) {
+                        Log.d(TAG, "onNavigationItemSelected: rotate");
+                        binding.cropImageView.setVisibility(View.VISIBLE);
+                        binding.imageDisplay.setVisibility(View.GONE);
+                        binding.cropImageView.setImageBitmap(bm);
+                    }
+                    binding.seekBarRotate.setVisibility(View.VISIBLE);*/
+                    binding.tvEditName.setText("회전");
+                    break;
+                case R.id.action_reverse:
+                    editStatus = "reverse";
+                    if (editStatus.equals("cut")) {
+                        binding.cropImageView.setVisibility(View.GONE);
+                        binding.imageDisplay.setVisibility(View.VISIBLE);
+                        binding.imageDisplay.setImageBitmap(bm);
+                    }
+                    binding.seekBarRotate.setVisibility(View.GONE);
+                    setReverse();
+                    binding.tvEditName.setText("반전");
+                    break;
+
+            }
+            return true;
+        });
         //Start respective activities when option is chosen from bottom navigation view
-        optionNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                switch (item.getItemId()) {
-
-                    case R.id.action_adjustment:
-                        editMode("adjustment");
-                        tvEditName.setText("자르기");
-                        break;
-                    case R.id.action_control:
-                        editMode("control");
-                        tvEditName.setText("밝기");
-                        break;
-
-                    case R.id.action_brightness:
-                        editStatus = "brightness";
-                        seekBarBrightness.setVisibility(View.VISIBLE);
-                        seekBarContrast.setVisibility(View.GONE);
-                        seekBarSaturation.setVisibility(View.GONE);
-                        tvEditName.setText("밝기");
-                        break;
-                    case R.id.action_contrast:
-                        editStatus = "contrast";
-                        seekBarBrightness.setVisibility(View.GONE);
-                        seekBarContrast.setVisibility(View.VISIBLE);
-                        seekBarSaturation.setVisibility(View.GONE);
-                        tvEditName.setText("대조");
-                        break;
-                    case R.id.action_saturation:
-                        editStatus = "saturation";
-                        seekBarBrightness.setVisibility(View.GONE);
-                        seekBarContrast.setVisibility(View.GONE);
-                        seekBarSaturation.setVisibility(View.VISIBLE);
-                        tvEditName.setText("채도");
-                        break;
-                    case R.id.action_cut:
-                        editStatus = "cut";
-                        setCropImageView();
-                        seekBarRotate.setVisibility(View.GONE);
-                        tvEditName.setText("자르기");
-                        break;
-                    case R.id.action_rotate:
-                        editStatus = "rotate";
-                        if (editStatus.equals("cut")) {
-                            cropImageView.setVisibility(View.GONE);
-                            imageDisplay.setVisibility(View.VISIBLE);
-                            imageDisplay.setImageBitmap(bm);
-                        }
-                        seekBarRotate.setVisibility(View.VISIBLE);
-                        tvEditName.setText("회전");
-                        break;
-                    case R.id.action_reverse:
-                        editStatus = "reverse";
-                        if (editStatus.equals("cut")) {
-                            cropImageView.setVisibility(View.GONE);
-                            imageDisplay.setVisibility(View.VISIBLE);
-                            imageDisplay.setImageBitmap(bm);
-                        }
-                        seekBarRotate.setVisibility(View.GONE);
-                        setReverse();
-                        tvEditName.setText("반전");
-                        break;
-
-                }
-                return true;
-            }
-        });
-
-        seekBarBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.seekBarBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 bright = ((255f / 50f) * i) - 255f;
-                imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
+                binding.imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
             }
 
             @Override
@@ -289,11 +177,11 @@ public class ImageDisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        seekBarContrast.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.seekBarContrast.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 cont = i * (0.1f);
-                imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
+                binding.imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
             }
 
             @Override
@@ -304,11 +192,11 @@ public class ImageDisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        seekBarSaturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.seekBarSaturation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 sat = (float) i / 256f;
-                imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
+                binding.imageDisplay.setImageBitmap(changeBitmapContrastBrightness(cont, bright, sat));
             }
 
             @Override
@@ -319,10 +207,10 @@ public class ImageDisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        seekBarRotate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        binding.seekBarRotate.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                cropImageView.setRotatedDegrees(i);
+                binding.cropImageView.setRotatedDegrees(i);
             }
 
             @Override
@@ -333,6 +221,9 @@ public class ImageDisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+
+
 
     /*    ImageView saveDisplayImage = (ImageView) findViewById(R.id.saveImageDisplay);
         saveDisplayImage.setOnClickListener(new View.OnClickListener() {
@@ -357,6 +248,56 @@ public class ImageDisplayActivity extends AppCompatActivity {
         });*/
 
 
+    }
+
+    private byte[] bitmapToByteArr() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG,100,stream);
+        byte[] bytes = stream.toByteArray();
+        return bytes;
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ib_cancel:
+                displayMode();
+                break;
+
+        }
+    }
+
+    private void initializeBitmap() {
+        final float targetW = getIntent().getExtras().getInt("width");
+        final float targetH = getIntent().getExtras().getInt("height");
+
+        // Get the dimensions of the bitmap
+        bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(MainActivity.currentPhotoPath, bmOptions);
+        float photoW = bmOptions.outWidth;
+        float photoH = bmOptions.outHeight;
+        {
+            vH = targetH * (0.89f);
+            vW = (targetH * (0.89f) / (bm.getHeight())) * (bm.getWidth());
+            if (vW > targetW) {
+                vW = targetW;
+                vH = (targetW / (bm.getWidth())) * (bm.getHeight());
+            }
+        }
+
+        // Determine how much to scale down the image
+        float scaleFactor = Math.min(photoW / vW, photoH / vH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = (int) scaleFactor;
+        bm = rotImage(BitmapFactory.decodeFile(MainActivity.currentPhotoPath, bmOptions));
+        bmOptions.inJustDecodeBounds = true;
+        iHeight = bmOptions.outHeight;
+    }
+
+    private void setImageDisplay() {
+        Glide.with(this).load(bm).into(binding.imageDisplay);
     }
 
     //Function to save image
@@ -445,62 +386,63 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private void saveBitmap() {
         if (editStatus.equals("cut")) {
-            bm = cropImageView.getCroppedImage();
+            bm = binding.cropImageView.getCroppedImage();
         } else {
-            bm = ((BitmapDrawable) imageDisplay.getDrawable()).getBitmap();
+            bm = ((BitmapDrawable) binding.imageDisplay.getDrawable()).getBitmap();
         }
-        imageDisplay.setImageBitmap(bm);
+        editStatus = "";
+        binding.imageDisplay.setImageBitmap(bm);
         Toast.makeText(getApplicationContext(), "변경 내용 저장", Toast.LENGTH_SHORT).show();
     }
 
     private void setCropImageView() {
-        cropImageView.setVisibility(View.VISIBLE);
-        cropImageView.setImageBitmap(bm);
-        cropImageView.setFixedAspectRatio(false);
-        cropImageView.setGuidelines(CropImageView.Guidelines.ON);
+        binding.cropImageView.setImageBitmap(bm);
+        binding.cropImageView.setFixedAspectRatio(false);
+        binding.cropImageView.setGuidelines(CropImageView.Guidelines.ON);
+        binding.cropImageView.setVisibility(View.VISIBLE);
+
     }
 
     private void displayMode() {
-        optionNavigationView.getMenu().clear();
-        optionNavigationView.inflateMenu(R.menu.option_img_nav_menu);
-        ibCancel.setVisibility(View.GONE);
-        ibSaveChanged.setVisibility(View.GONE);
-        tvEditName.setVisibility(View.GONE);
-        btnNext.setVisibility(View.VISIBLE);
-        tvImgEdit.setVisibility(View.VISIBLE);
-        imgToolbar.setNavigationIcon(R.drawable.ic_back);
-        cropImageView.setVisibility(View.GONE);
-        seekBarBrightness.setVisibility(View.GONE);
-        seekBarContrast.setVisibility(View.GONE);
-        seekBarSaturation.setVisibility(View.GONE);
-        seekBarRotate.setVisibility(View.GONE);
+        binding.optionNavigation.getMenu().clear();
+        binding.optionNavigation.inflateMenu(R.menu.option_img_nav_menu);
+        binding.ibCancel.setVisibility(View.GONE);
+        binding.ibSaveChanged.setVisibility(View.GONE);
+        binding.tvEditName.setVisibility(View.GONE);
+        binding.btnNext.setVisibility(View.VISIBLE);
+        binding.tvImgEdit.setVisibility(View.VISIBLE);
+        binding.imgToolbar.setNavigationIcon(R.drawable.ic_back);
+        binding.cropImageView.setVisibility(View.GONE);
+        binding.seekBarBrightness.setVisibility(View.GONE);
+        binding.seekBarContrast.setVisibility(View.GONE);
+        binding.seekBarSaturation.setVisibility(View.GONE);
+        binding.seekBarRotate.setVisibility(View.GONE);
     }
 
     private void editMode(String type) {
         if (type.equals("adjustment")) {
             editStatus = "cut";
-            optionNavigationView.getMenu().clear();
-            optionNavigationView.inflateMenu(R.menu.option_img_nav_adjustment);
-            ibCancel.setVisibility(View.VISIBLE);
-            ibSaveChanged.setVisibility(View.VISIBLE);
-            tvEditName.setVisibility(View.VISIBLE);
-            btnNext.setVisibility(View.GONE);
-            tvImgEdit.setVisibility(View.GONE);
-            imgToolbar.setNavigationIcon(null);
-            cropImageView.setVisibility(View.VISIBLE);
+            binding.optionNavigation.getMenu().clear();
+            binding.optionNavigation.inflateMenu(R.menu.option_img_nav_adjustment);
+            binding.ibCancel.setVisibility(View.VISIBLE);
+            binding.ibSaveChanged.setVisibility(View.VISIBLE);
+            binding.tvEditName.setVisibility(View.VISIBLE);
+            binding.btnNext.setVisibility(View.GONE);
+            binding.tvImgEdit.setVisibility(View.GONE);
+            binding.imgToolbar.setNavigationIcon(null);
             setCropImageView();
         } else {
             editStatus = "brightness";
-            optionNavigationView.getMenu().clear();
-            optionNavigationView.inflateMenu(R.menu.option_img_nav_control);
-            ibCancel.setVisibility(View.VISIBLE);
-            ibSaveChanged.setVisibility(View.VISIBLE);
-            tvEditName.setVisibility(View.VISIBLE);
-            btnNext.setVisibility(View.GONE);
-            tvImgEdit.setVisibility(View.GONE);
-            imgToolbar.setNavigationIcon(null);
-            seekBarBrightness.setVisibility(View.VISIBLE);
-            cropImageView.setVisibility(View.GONE);
+            binding.optionNavigation.getMenu().clear();
+            binding.optionNavigation.inflateMenu(R.menu.option_img_nav_control);
+            binding.ibCancel.setVisibility(View.VISIBLE);
+            binding.ibSaveChanged.setVisibility(View.VISIBLE);
+            binding.tvEditName.setVisibility(View.VISIBLE);
+            binding.btnNext.setVisibility(View.GONE);
+            binding.tvImgEdit.setVisibility(View.GONE);
+            binding.imgToolbar.setNavigationIcon(null);
+            binding.seekBarBrightness.setVisibility(View.VISIBLE);
+            binding.cropImageView.setVisibility(View.GONE);
         }
     }
 
@@ -510,7 +452,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
         sideInversion.setScale(-1, 1);  // 좌우반전
         bm = Bitmap.createBitmap(bm, 0, 0,
                 bm.getWidth(), bm.getHeight(), sideInversion, false);
-        imageDisplay.setImageBitmap(bm);
     }
 }
 

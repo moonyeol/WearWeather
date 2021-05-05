@@ -1,3 +1,4 @@
+/*
 package wear.weather.post.ui;
 
 import android.content.Intent;
@@ -181,3 +182,4 @@ public class Rotate_Crop_Activity extends AppCompatActivity {
 
     }
 }
+*/

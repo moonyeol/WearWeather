@@ -40,6 +40,9 @@
         <activity android:name=".post.ui.Tune_Activity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
+        <activity android:name=".post.ui.UploadActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
     </application>
 
 </manifest>

@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주", "위치 추가")
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
