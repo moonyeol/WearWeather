@@ -2,20 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="wear.weather">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WearWeather">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.WearWeather.NoActionBar">
+        <activity android:name=".view.InputNickActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="닉네임 설정"></activity>
+        <activity android:name=".view.PermissionActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="접근 권한"></activity>
+        <activity android:name=".view.IntroduceActivity" />
+        <activity android:name=".view.LoginActivity"/>
+        <activity android:name=".view.BoardInputActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="포스트 작성하기"/>
+        <activity android:name=".view.BoardListActivity" />
+        <activity android:name=".view.SplashActivity" android:theme="@style/Theme.WearWeather.splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.ImageTagActivity" >
+
+        </activity>
+
     </application>
 
 </manifest>
