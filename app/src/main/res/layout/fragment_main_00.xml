@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="fragment"
+            type="wear.weather.main.ui.MainFragment00" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_main_00"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:src="@drawable/weather"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_cur_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="12˚"
+        android:textColor="@color/black"
+        android:textSize="70sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_00" />
+
+    <ImageView
+        android:id="@+id/iv_cur_weather"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/ic_mini_weather"
+        app:layout_constraintLeft_toRightOf="@id/tv_cur_temp"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_00" />
+
+    <TextView
+        android:id="@+id/tv_per_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="10dp"
+        android:text="체감온도"
+        app:layout_constraintLeft_toRightOf="@id/iv_cur_weather"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_00" />
+
+    <TextView
+        android:id="@+id/tv_cur_perceived_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="17˚"
+        app:layout_constraintLeft_toRightOf="@+id/tv_per_temp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_main_00" />
+
+    <TextView
+        android:id="@+id/tv_max_min_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="최고/최저 기온"
+        app:layout_constraintLeft_toRightOf="@+id/iv_cur_weather"
+        app:layout_constraintTop_toBottomOf="@+id/tv_per_temp" />
+
+    <TextView
+        android:id="@+id/tv_cur_max_min_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:text="7˚/15˚"
+        app:layout_constraintLeft_toRightOf="@+id/tv_max_min_temp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_per_temp" />
+
+    <TextView
+        android:id="@+id/tv_fine_dust_grade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="미세먼지"
+        app:layout_constraintLeft_toRightOf="@+id/iv_cur_weather"
+        app:layout_constraintTop_toBottomOf="@+id/tv_max_min_temp" />
+
+    <TextView
+        android:id="@+id/tv_cur_fine_dust_grade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="좋음"
+        app:layout_constraintLeft_toRightOf="@+id/tv_fine_dust_grade"
+        app:layout_constraintTop_toBottomOf="@id/tv_cur_max_min_temp" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/btn_show_detail"
+        android:layout_width="117dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="@color/white"
+        android:drawableEnd="@drawable/ic_vector"
+        android:text="세부 날씨 보기"
+        android:textColor="#aad2ff"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/tv_fine_dust_grade"
+        app:layout_constraintRight_toRightOf="@id/tv_cur_fine_dust_grade"
+        app:layout_constraintTop_toBottomOf="@id/tv_fine_dust_grade" />
+
+    <TextView
+        android:id="@+id/tv_ment_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오늘은 잠깐 봄이 찾아왔어요."
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_show_detail" />
+
+    <TextView
+        android:id="@+id/tv_ment_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="집으로 돌아오는 저녁엔 쌀쌀해요."
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_ment_1" />
+
+    <TextView
+        android:id="@+id/tv_ment_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="마스크는 필수"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_ment_2" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/btn_cur_share_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/white"
+        android:text="오늘의 날씨를 공유해보세요"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_ment_3" />
+
+    <View
+        android:id="@+id/view_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#919090"
+        app:layout_constraintTop_toBottomOf="@id/btn_cur_share_weather" />
+
+    <TextView
+        android:id="@+id/tv_magazine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="매거진"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_1" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/btn_show_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:text="더보기"
+        android:textColor="#919090"
+        android:textSize="15sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_1" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_magazine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_magazine" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보이냐"
+        android:textSize="200sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_magazine" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

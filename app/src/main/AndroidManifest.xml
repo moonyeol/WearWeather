@@ -3,10 +3,11 @@
     package="wear.weather">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.SET_ALARM" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -15,6 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WearWeather.NoActionBar">
+        <activity
+            android:name=".main.ui.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity android:name=".view.InputNickActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="닉네임 설정"></activity>
         <activity android:name=".view.PermissionActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="접근 권한"></activity>
         <activity android:name=".view.IntroduceActivity" />
@@ -31,6 +35,24 @@
         <activity android:name=".view.ImageTagActivity" >
 
         </activity>
+        <activity android:name=".main.ui.MainAddLocationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".detail.ui.DetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".post.ui.ImageDisplayActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".post.ui.Rotate_Crop_Activity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".post.ui.Tune_Activity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".post.ui.UploadActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
 
     </application>
 

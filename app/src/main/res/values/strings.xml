@@ -1,13 +1,22 @@
 <resources>
+    <string name="app_name">WearWeather</string>
     <string name="activity_first_text">Wear Weather</string>
 
+    <string name="add_text">Add Text</string>
+    <string name="draw_over">Draw</string>
+    <string name="add_emoji">Add Emoji</string>
+    <string name="rotate_crop">Rotate/Crop</string>
+    <string name="transition_image">transition:IMAGE</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="rotate_right">Rotate Right</string>
+    <string name="rotate_left">Rotate Left</string>
 
     <string name="app_name">Wear Weather</string>
     <string name="title_text">Wear Weather</string>
     <string name="weather">Weather</string>
     <string name="wear_story">Wear Story</string>
     <string name="community">Community</string>
-<string name="first_introduce">웨어웨더와 함께 기분 좋은 하루를 코디하세요!</string>
+    <string name="first_introduce">웨어웨더와 함께 기분 좋은 하루를 코디하세요!</string>
     <string name="second_introduce">코디에 도움되는 쉬운 날씨 정보 확인하기</string>
     <string name="third_introduce">다른 사람들과 옷차림 고민 해결하기</string>
     <string name="forth_introduce">다른 사람들은 오늘 어떻게 입었는지 스타일로 확인하기</string>
