@@ -15,12 +15,15 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -32,6 +35,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -54,7 +58,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     static BitmapFactory.Options bmOptions;
     static Bitmap bm = BitmapFactory.decodeFile(MainActivity.currentPhotoPath);
     private Context context;
-
+    static byte[] imgBytes;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -64,7 +68,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
         binding.setActivity(this);
 
         context = this;
-
 
         binding.imgToolbar.setNavigationIcon(R.drawable.ic_back);
         binding.imgToolbar.setNavigationOnClickListener(v-> finish());
@@ -86,10 +89,13 @@ public class ImageDisplayActivity extends AppCompatActivity {
                 }
         );
         binding.btnNext.setOnClickListener(v -> {
-            byte[] imgByteArr = bitmapToByteArr();
+            /*byte[] imgByteArr = bitmapToByteArr();
             Intent intent = new Intent(context, UploadActivity.class);
             intent.putExtra("bm", imgByteArr);
-            startActivity(intent);
+            startActivity(intent);*/
+            BackRunnable intentThread = new BackRunnable();
+            intentThread.setDaemon(true);
+            intentThread.start();
         });
 
         binding.optionNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -445,5 +451,33 @@ public class ImageDisplayActivity extends AppCompatActivity {
         bm = Bitmap.createBitmap(bm, 0, 0,
                 bm.getWidth(), bm.getHeight(), sideInversion, false);
     }
+
+    class BackRunnable extends Thread{
+        @Override
+        public void run() {
+            imgBytes = bitmapToByteArr();
+            Message msg = new Message();
+            msg.what = 0;
+            msg.obj = imgBytes;
+            mHandler.sendMessage(msg);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what==0){
+                Intent intent = new Intent(context,UploadActivity.class);
+                intent.putExtra("bm", (byte[]) msg.obj);
+                startActivity(intent);
+            }
+        }
+    };
+
+
 }
 

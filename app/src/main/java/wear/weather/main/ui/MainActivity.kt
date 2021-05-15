@@ -30,6 +30,7 @@ import wear.weather.databinding.ActivityMainBinding
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.post.ui.ImageDisplayActivity
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -64,10 +65,17 @@ class MainActivity : AppCompatActivity() {
             setCurrentLocation(location)
             val stationName = getStation()
             getCurDust(stationName)
+            lastAPICallTime = getLastAPICallTime()
+            Log.d(TAG, "시간: $lastAPICallTime")
         }
         setBottomNav()
     }
-
+    private fun getLastAPICallTime():String{
+        val now = System.currentTimeMillis()
+        val mDate = Date(now)
+        val simpleDate = SimpleDateFormat("yyyyMMddhh")
+        return simpleDate.format(mDate)
+    }
     private fun setBottomNav() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -147,8 +155,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getStation(): String {
         val coder = Geocoder(this@MainActivity, Locale.getDefault())
-        val list = coder.getFromLocation(lat, lot, 1)
+        val list = coder.getFromLocation(lat, lot, 10)
         Log.d(TAG, "getStation: $lat $lot")
+        Log.d(TAG, "getStation: ${list.size}")
         return list[0].subLocality
     }
 
@@ -297,6 +306,7 @@ class MainActivity : AppCompatActivity() {
         var pm10Grade: String = "error"
         var lat: Double = 0.0
         var lot: Double = 0.0
+        var lastAPICallTime: String = ""
 
     }
 }
