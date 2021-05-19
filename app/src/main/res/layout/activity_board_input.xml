@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#F0F0F5"
-                app:layout_constraintTop_toBottomOf="@+id/post_edit_location"
+                app:layout_constraintTop_toBottomOf="@+id/location_button"
                 />
             
             <TextView
@@ -113,7 +113,7 @@
                 android:text="필터링 태그"
                 android:textColor="#00060C"
                 android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/post_edit_location"
+                app:layout_constraintTop_toBottomOf="@+id/location_button"
                 android:layout_marginTop="14dp"/>
 
 

@@ -15,6 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.WearWeather.NoActionBar">
         <activity
             android:name=".main.ui.MainActivity"
@@ -42,12 +43,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
         <activity android:name=".post.ui.ImageDisplayActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".post.ui.Rotate_Crop_Activity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".post.ui.Tune_Activity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
         <activity android:name=".post.ui.UploadActivity"

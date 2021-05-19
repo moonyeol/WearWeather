@@ -27,9 +27,6 @@ class MainFragment00 : Fragment() {
 
     private lateinit var binding: FragmentMain00Binding
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,18 +40,13 @@ class MainFragment00 : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val (curLat, curLot) = arrayListOf(
-            lat.toString(),
-            lot.toString()
-        )
         binding.btnShowDetail.setOnClickListener {
             val intent = Intent(activity!!.applicationContext, DetailActivity::class.java)
             intent.putExtra("lat", lat.toString())
             intent.putExtra("lot", lot.toString())
             startActivity(intent)
         }
-        getCurrentWeather(curLat, curLot)
-        binding.tvCurFineDustGrade.text = pm10Grade
+
     }
 
     fun setTvCurFineDustGrade() {
@@ -85,8 +77,7 @@ class MainFragment00 : Fragment() {
                 binding.tvCurPerceivedTemp.text = toTemp(feelsLike)
                 binding.tvCurTemp.text = toTemp(temp)
                 binding.tvCurMaxMinTemp.text = "${toTemp(tempMax)} / ${toTemp(tempMin)}"
-//                tvCurWeatherTemp.text = "날씨: $weather, 기온: $temp"
-//                tvCurPerceivedTemp.text = "일교차: $tempCross / 체감온도: $feelsLike"
+
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -94,6 +85,29 @@ class MainFragment00 : Fragment() {
             }
         })
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+
+        val (curLat, curLot) = arrayListOf(
+            lat.toString(),
+            lot.toString()
+        )
+        getCurrentWeather(curLat, curLot)
+        binding.tvCurFineDustGrade.text = pm10Grade
+    }
+
 
 
     companion object {

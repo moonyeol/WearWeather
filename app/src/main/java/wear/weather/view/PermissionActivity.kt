@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import wear.weather.R
+import wear.weather.main.ui.MainActivity
 
 
 class PermissionActivity  : AppCompatActivity() {
@@ -15,10 +16,9 @@ class PermissionActivity  : AppCompatActivity() {
         setContentView(R.layout.activity_permission)
         val signInButton: Button = findViewById(R.id.permission_check_button)
 
-
         signInButton.setOnClickListener{
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.SET_ALARM,Manifest.permission.CAMERA,Manifest.permission.ACCESS_BACKGROUND_LOCATION),1)
-            val intent = Intent(this, BoardInputActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 

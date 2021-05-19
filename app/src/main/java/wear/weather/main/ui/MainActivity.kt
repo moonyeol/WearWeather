@@ -17,6 +17,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pickedImage: Uri
 
 
-    private var isFineLocationPermissionChecked = true
+    private var isFineLocationPermissionChecked = false
 
 
     // 서버에서 받아온 후 정렬
@@ -50,32 +51,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate: ")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
-
+        
         val spinnerAdapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         binding.mainSpinner.adapter = spinnerAdapter
         setSpinnerEvent()
-        checkPermissions()
 
-        if (isFineLocationPermissionChecked) {
-            Log.d(TAG, "isFineLocationPermissionChecked: $isFineLocationPermissionChecked")
-            location = getCurrentLocation()
-            setCurrentLocation(location)
-            val stationName = getStation()
-            getCurDust(stationName)
-            lastAPICallTime = getLastAPICallTime()
-            Log.d(TAG, "시간: $lastAPICallTime")
-        }
+        Log.d(TAG, "isFineLocationPermissionChecked: $isFineLocationPermissionChecked")
+
         setBottomNav()
     }
-    private fun getLastAPICallTime():String{
+
+    private fun getLastAPICallTime(): String {
         val now = System.currentTimeMillis()
         val mDate = Date(now)
         val simpleDate = SimpleDateFormat("yyyyMMddhh")
         return simpleDate.format(mDate)
     }
+
     private fun setBottomNav() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -124,22 +120,51 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissions() {
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+        checkPermissions()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            location = getCurrentLocation()!!
+            setCurrentLocation(location)
+            val stationName = getStation()
+            getCurDust(stationName)
+            lastAPICallTime = getLastAPICallTime()
+            Log.d(TAG, "시간: $lastAPICallTime")
+        }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onResume: ")
+    }
+    
+
+    private fun checkPermissions() {
+        Log.d(TAG, "checkPermissions: ,,,")
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-                isFineLocationPermissionChecked = false
             }
 
-            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                deniedPermissions?.forEach {
-                    when (it) {
-                        Manifest.permission.ACCESS_FINE_LOCATION -> {
-                            isFineLocationPermissionChecked = false
-                        }
-                    }
-                }
-            }
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {}
         }
         TedPermission.with(this)
             .setPermissionListener(permissionListener)
@@ -147,6 +172,7 @@ class MainActivity : AppCompatActivity() {
             .setDeniedMessage("[설정] -> [권한] 들어가세요")
             .setPermissions(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
@@ -161,12 +187,21 @@ class MainActivity : AppCompatActivity() {
         return list[0].subLocality
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocation(): Location {
+    private fun getCurrentLocation(): Location? {
         val locationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val a = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
         Log.d(TAG, "getCurrentLocation: ${a.longitude}")
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
+        }
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
     }
 
@@ -250,7 +285,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d(TAG, "MainFailure: $stationName")
+                Log.d(TAG, "DustFailure: $stationName")
+                Log.d(TAG, "DustFailure: ${t.message}")
                 t.printStackTrace()
             }
         })
