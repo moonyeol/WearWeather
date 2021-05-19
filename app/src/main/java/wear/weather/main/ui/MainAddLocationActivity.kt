@@ -27,7 +27,7 @@ class MainAddLocationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_add_location)
-        Log.d(Companion.TAG, "onCreate: ??")
+
         val location = getCurrentLocation()
         getCurrentWeather(location.latitude.toString(), location.longitude.toString())
     }

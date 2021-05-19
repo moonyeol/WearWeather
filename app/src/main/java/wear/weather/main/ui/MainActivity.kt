@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var location: Location
     private lateinit var pickedImage: Uri
 
-
     private var isFineLocationPermissionChecked = false
 
 
