@@ -40,20 +40,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainFragment01: MainFragment01
     private lateinit var location: Location
     private lateinit var pickedImage: Uri
-
     private var isFineLocationPermissionChecked = false
-
 
     // 서버에서 받아온 후 정렬
     private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주", "위치 추가")
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
-        
+
         val spinnerAdapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         binding.mainSpinner.adapter = spinnerAdapter
@@ -301,12 +298,10 @@ class MainActivity : AppCompatActivity() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
                 Toast.makeText(this, "승인이 허가되어 있습니다.", Toast.LENGTH_LONG).show();
-
             } else {
                 Toast.makeText(this, "아직 승인받지 않았습니다.", Toast.LENGTH_LONG).show();
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
