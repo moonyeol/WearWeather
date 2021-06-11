@@ -17,7 +17,7 @@ import wear.weather.R
 import wear.weather.main.adapter.MainAddLocationAdapter
 import wear.weather.main.model.CurrentWeatherData
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_WEATHER_CUR_URL
+import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.OPEN_WEATHER_KEY
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +42,7 @@ class MainAddLocationActivity : AppCompatActivity() {
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(OPEN_WEATHER_CUR_URL)
+            .buildRetrofit(OPEN_WEATHER_URL)
             .getCurrentWeather(lat, lot, OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

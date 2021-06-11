@@ -5,9 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
-import android.location.Location
-import android.location.LocationManager
+import android.location.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,6 +17,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.gun0912.tedpermission.PermissionListener
@@ -28,19 +31,23 @@ import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
-import wear.weather.retrofit.RetrofitClient
 import wear.weather.post.ui.ImageDisplayActivity
+import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
+//    private lateinit var fusedLocationProviderClient: Fused
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainFragment00: MainFragment00
     private lateinit var mainFragment01: MainFragment01
-    private lateinit var location: Location
     private lateinit var pickedImage: Uri
-    private var isFineLocationPermissionChecked = false
+
+    private var isLocationPermissionGranted = false
 
     // 서버에서 받아온 후 정렬
     private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주", "위치 추가")
@@ -48,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
 
@@ -55,10 +63,11 @@ class MainActivity : AppCompatActivity() {
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         binding.mainSpinner.adapter = spinnerAdapter
         setSpinnerEvent()
-
-        Log.d(TAG, "isFineLocationPermissionChecked: $isFineLocationPermissionChecked")
-
+        setCurrentLocation()
+        lastAPICallTime = getLastAPICallTime()
+        Log.d(TAG, "호출 시간: $lastAPICallTime")
         setBottomNav()
+
     }
 
     private fun getLastAPICallTime(): String {
@@ -69,6 +78,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setBottomNav() {
+
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         mainFragment00 = MainFragment00()
@@ -119,27 +129,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart: ")
-        checkPermissions()
     }
 
     override fun onResume() {
         super.onResume()
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            location = getCurrentLocation()!!
-            setCurrentLocation(location)
-            val stationName = getStation()
-            getCurDust(stationName)
-            lastAPICallTime = getLastAPICallTime()
-            Log.d(TAG, "시간: $lastAPICallTime")
-        }
 
     }
 
@@ -150,32 +143,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onResume: ")
-    }
-    
 
-    private fun checkPermissions() {
-        Log.d(TAG, "checkPermissions: ,,,")
-        val permissionListener = object : PermissionListener {
-            override fun onPermissionGranted() {
-            }
-
-            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {}
-        }
-        TedPermission.with(this)
-            .setPermissionListener(permissionListener)
-            .setRationaleMessage(" 이 앱을 사용하기 위해서는 접근 권한이 필요합니다")
-            .setDeniedMessage("[설정] -> [권한] 들어가세요")
-            .setPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-            .check()
     }
 
-    private fun getStation(): String {
+    private fun getStation(lat: Double, lot: Double): String {
         val coder = Geocoder(this@MainActivity, Locale.getDefault())
         val list = coder.getFromLocation(lat, lot, 10)
         Log.d(TAG, "getStation: $lat $lot")
@@ -183,11 +154,9 @@ class MainActivity : AppCompatActivity() {
         return list[0].subLocality
     }
 
-    private fun getCurrentLocation(): Location? {
-        val locationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val a = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
-        Log.d(TAG, "getCurrentLocation: ${a.longitude}")
+
+    private fun setCurrentLocation() {
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -196,14 +165,43 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
-        }
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) as Location
-    }
 
-    private fun setCurrentLocation(location: Location) {
-        lat = location.latitude
-        lot = location.longitude
+            val mLocationRequest: LocationRequest = LocationRequest.create()
+            mLocationRequest.interval = 60000
+            mLocationRequest.fastestInterval = 5000
+            mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            val mLocationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    if (locationResult == null) {
+                        Log.d(TAG, "onLocationResult is null")
+                        return
+                    }
+                    for (location in locationResult.locations) {
+                        if (location != null) {
+                            lat = location.latitude
+                            lot = location.longitude
+                            val stationName = getStation(location.latitude, location.longitude)
+                            getCurDust(stationName)
+                            Log.d(TAG, "onLocationResult: lat: $lat lot:$lot")
+                        }
+                    }
+                }
+            }
+            LocationServices.getFusedLocationProviderClient(this)
+                .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
+            LocationServices.getFusedLocationProviderClient(this).lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    lat = location.latitude
+                    lot = location.longitude
+                    val stationName = getStation(location.latitude, location.longitude)
+                    getCurDust(stationName)
+                    Log.d(TAG, "setCurrentLocation: lat: $lat lot: $lot")
+                }
+            }
+        }
+
+
+
     }
 
     private fun setSpinnerEvent() {
@@ -323,20 +321,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "정말 종료하시겠습니까", Toast.LENGTH_SHORT).show();
+        }
+        //2번째 백버튼 클릭 (종료)
+        else {
+            appFinish()
+        }
+
+    }
+
+    private fun appFinish() {
+        finish()
+        exitProcess(0)
+    }
+
     companion object {
         lateinit var currentPhotoPath: String
         private const val TAG = "MainActivity"
         private const val GPS_CHECK = 1000
         private const val RESULT_LOAD_IMAGE = 2000
+        var backKeyPressedTime: Long = 0L
+        var lat: Double = 0.0
+        var lot: Double = 0.0
         var no2Value: Double = 0.0
         var pm2_5Value: Int = 0
         var pm10Value: Int = 0
         var no2Grade: Int = 0
         var pm2_5Grade: String = "error"
         var pm10Grade: String = "error"
-        var lat: Double = 0.0
-        var lot: Double = 0.0
         var lastAPICallTime: String = ""
-
     }
 }

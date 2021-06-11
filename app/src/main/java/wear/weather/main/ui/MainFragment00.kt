@@ -15,11 +15,10 @@ import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.FragmentMain00Binding
 import wear.weather.detail.ui.DetailActivity
-import wear.weather.main.ui.MainActivity.Companion.lat
-import wear.weather.main.ui.MainActivity.Companion.lot
+
 import wear.weather.main.ui.MainActivity.Companion.pm10Grade
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_WEATHER_CUR_URL
+import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.OPEN_WEATHER_KEY
 import wear.weather.util.toTemp
 
@@ -31,7 +30,7 @@ class MainFragment00 : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_00, container, false)
 
         return binding.root
@@ -41,9 +40,11 @@ class MainFragment00 : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         binding.btnShowDetail.setOnClickListener {
+            Log.d(TAG, "onActivityCreated: lot: ${MainActivity.lat}")
+
             val intent = Intent(activity!!.applicationContext, DetailActivity::class.java)
-            intent.putExtra("lat", lat.toString())
-            intent.putExtra("lot", lot.toString())
+            intent.putExtra("lat", MainActivity.lat.toString())
+            intent.putExtra("lot", MainActivity.lot.toString())
             startActivity(intent)
         }
 
@@ -56,7 +57,7 @@ class MainFragment00 : Fragment() {
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(OPEN_WEATHER_CUR_URL)
+            .buildRetrofit(OPEN_WEATHER_URL)
             .getCurrentWeather(lat, lot, OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -101,8 +102,8 @@ class MainFragment00 : Fragment() {
         Log.d(TAG, "onResume: ")
 
         val (curLat, curLot) = arrayListOf(
-            lat.toString(),
-            lot.toString()
+            MainActivity.lat.toString(),
+            MainActivity.lot.toString()
         )
         getCurrentWeather(curLat, curLot)
         binding.tvCurFineDustGrade.text = pm10Grade
