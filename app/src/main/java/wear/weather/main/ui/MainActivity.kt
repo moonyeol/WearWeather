@@ -1,56 +1,58 @@
 package wear.weather.main.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.view.Window
+import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.RotateAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
+import jp.wasabeef.blurry.Blurry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
+import wear.weather.databinding.FragmentLocationListBinding
 import wear.weather.post.ui.ImageDisplayActivity
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.log
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-//    private lateinit var fusedLocationProviderClient: Fused
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainFragment00: MainFragment00
     private lateinit var mainFragment01: MainFragment01
     private lateinit var pickedImage: Uri
+    private lateinit var fragmentTransaction: FragmentTransaction
 
+
+    private var beforeRotaion = 0f
     private var isLocationPermissionGranted = false
-
-    // 서버에서 받아온 후 정렬
-    private val spinnerItems = mutableListOf("서울, 서교동", "부산", "제주", "위치 추가")
+    private var isLocationListOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +61,93 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.activity = this
 
-        val spinnerAdapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
-        binding.mainSpinner.adapter = spinnerAdapter
-        setSpinnerEvent()
+        val locationListFragment = MainLocationListFragment()
+        val tmpViewFragment = MainTmpFragment()
+        supportFragmentManager.beginTransaction().run {
+            this.add(R.id.frameLayout_tmp_view, tmpViewFragment)
+            this.addToBackStack(null)
+            this.commit()
+        }
+
+        binding.btnLocation.setOnClickListener {
+            if (!isLocationListOpen) {
+                openLocationList(locationListFragment)
+                rotationButtonAnimation(beforeRotaion + 180)
+
+            } else {
+                closeLocationList(locationListFragment)
+                rotationButtonAnimation(beforeRotaion + 180)
+            }
+        }
+        binding.tvCurLocation.setOnClickListener {
+            if (!isLocationListOpen) {
+                openLocationList(locationListFragment)
+                rotationButtonAnimation(beforeRotaion + 180)
+
+            } else {
+                closeLocationList(locationListFragment)
+                rotationButtonAnimation(beforeRotaion + 180)
+            }
+        }
+
         setCurrentLocation()
         lastAPICallTime = getLastAPICallTime()
         Log.d(TAG, "호출 시간: $lastAPICallTime")
         setBottomNav()
 
+    }
+
+    private fun openLocationList(locationListFragment: Fragment) {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(
+            R.anim.list_up_to_down,
+            R.anim.list_down_to_up
+        )
+        fragmentTransaction.add(R.id.frameLayout_location_list, locationListFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+        binding.frameLayoutTmpView.visibility = View.VISIBLE
+        isLocationListOpen = true
+        binding.btnLocation.startAnimation(
+            AnimationUtils.loadAnimation(
+                applicationContext, R.anim.rotate_anim
+            )
+        )
+    }
+
+    private fun closeLocationList(locationListFragment: Fragment) {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(
+            R.anim.list_up_to_down,
+            R.anim.list_down_to_up
+        )
+        fragmentTransaction.remove(locationListFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+        binding.frameLayoutTmpView.visibility = View.GONE
+        isLocationListOpen = false
+        binding.btnLocation.startAnimation(
+            AnimationUtils.loadAnimation(
+                applicationContext, R.anim.rotate_anim
+            )
+        )
+    }
+
+    private fun rotationButtonAnimation(i: Float) {
+        RotateAnimation(
+            beforeRotaion,
+            i,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+            .run {
+                this.duration = 250
+                this.fillAfter = true
+                binding.btnLocation.startAnimation(this)
+                beforeRotaion = i
+            }
     }
 
     private fun getLastAPICallTime(): String {
@@ -201,45 +281,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-    }
-
-    private fun setSpinnerEvent() {
-        binding.mainSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-
-                when (position) {
-                    // 위치
-                    0 -> {
-
-                    }
-                    1 -> {
-
-                    }
-                    2 -> {
-
-                    }
-                    3 -> {
-                        val intent = Intent(applicationContext, MainAddLocationActivity::class.java)
-//                        intent.putExtra("lat",lat)
-//                        intent.putExtra("lot",lot)
-                        startActivity(intent)
-                        Log.d(TAG, "onItemSelected: ??")
-                    }
-                    else -> {
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-        }
     }
 
 

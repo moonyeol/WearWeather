@@ -60,7 +60,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx:19.2.1'
 
-
+    // blur
+    implementation 'jp.wasabeef:blurry:4.0.0'
 
     // retrofit
     def retrofitVer = "2.9.0"
