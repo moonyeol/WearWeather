@@ -27,4 +27,6 @@
     <color name="navigationBarColor">#FFFFFF</color>
     <color name="colorAccent">#808080</color>
     <color name="colorImagePlaceHolder">#808080</color>
+    <color name="colorDivision">#e0e0e0</color>
+    <color name="colorLightGray">#f1f1f1</color>
 </resources>

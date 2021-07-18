@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import wear.weather.R
 import wear.weather.adapter.MainListAdapter
-import wear.weather.model.ContentModel
 
 class BoardListActivity : AppCompatActivity() {
     private var uid:String? = null
