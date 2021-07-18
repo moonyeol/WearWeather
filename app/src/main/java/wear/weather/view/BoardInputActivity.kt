@@ -15,8 +15,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import wear.weather.R
 import wear.weather.adapter.BoardInputRecyclerviewAdapter
-import wear.weather.model.ContentModel
-import wear.weather.model.UserModel
+import wear.weather.model.ContentDTO
 
 
 class BoardInputActivity : AppCompatActivity() {
@@ -88,7 +87,7 @@ class BoardInputActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.upload_next_button -> {
-                val datInput = ContentModel(
+                val datInput = ContentDTO(
                     uid,
                     text_form.text.toString(),
                     keywords

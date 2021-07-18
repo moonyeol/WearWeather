@@ -20,7 +20,7 @@ interface RetrofitService {
     ): Call<JsonObject>
 
     @GET("onecall?")
-    fun getHourlyWeather(
+    fun getDailyOrHourlyWeather(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("exclude") exclude: String,
