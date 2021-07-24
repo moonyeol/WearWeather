@@ -70,12 +70,14 @@ public class ImageDisplayActivity extends AppCompatActivity {
         context = this;
 
         binding.imgToolbar.setNavigationIcon(R.drawable.ic_back);
-        binding.imgToolbar.setNavigationOnClickListener(v-> finish());
+        binding.imgToolbar.setNavigationOnClickListener(v -> finish());
 
+        //getDisplay~~
+        binding.cropImageView.setMaxCropResultSize(300, 400);
+        binding.cropImageView.setMinCropResultSize(300, 400);
         initializeBitmap();
 
         setImageDisplay();
-
         binding.ibCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,7 +260,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private byte[] bitmapToByteArr() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG,100,stream);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] bytes = stream.toByteArray();
         return bytes;
     }
@@ -395,7 +397,8 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private void setCropImageView() {
         binding.cropImageView.setImageBitmap(bm);
-        binding.cropImageView.setFixedAspectRatio(false);
+        binding.cropImageView.setFixedAspectRatio(true);
+//        binding.cropImageView.setFixedAspectRatio(false);
         binding.cropImageView.setGuidelines(CropImageView.Guidelines.ON);
         binding.cropImageView.setVisibility(View.VISIBLE);
 
@@ -452,7 +455,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
                 bm.getWidth(), bm.getHeight(), sideInversion, false);
     }
 
-    class BackRunnable extends Thread{
+    class BackRunnable extends Thread {
         @Override
         public void run() {
             imgBytes = bitmapToByteArr();
@@ -467,11 +470,12 @@ public class ImageDisplayActivity extends AppCompatActivity {
             }
         }
     }
-    Handler mHandler = new Handler(){
+
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if (msg.what==0){
-                Intent intent = new Intent(context,UploadActivity.class);
+            if (msg.what == 0) {
+                Intent intent = new Intent(context, UploadActivity.class);
                 intent.putExtra("bm", (byte[]) msg.obj);
                 startActivity(intent);
             }

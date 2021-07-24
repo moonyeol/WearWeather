@@ -4,10 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -15,8 +15,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.WearWeather.NoActionBar">
+        android:theme="@style/Theme.WearWeather.NoActionBar"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".main.ui.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -26,35 +26,61 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.InputNickActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="닉네임 설정"></activity>
-        <activity android:name=".view.PermissionActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="접근 권한"></activity>
-        <activity android:name=".view.IntroduceActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".view.LoginActivity"/>
+        <activity
+            android:name=".view.InputNickActivity"
+            android:label="닉네임 설정"
+            android:parentActivityName=".view.LoginActivity"
+            android:theme="@style/Theme.WearWeather"></activity>
+        <activity
+            android:name=".view.PermissionActivity"
+            android:label="접근 권한"
+            android:parentActivityName=".view.LoginActivity"
+            android:theme="@style/Theme.WearWeather"></activity>
+        <activity
+            android:name=".view.IntroduceActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".view.LoginActivity" />
 
-        <activity android:name=".view.BoardInputActivity" android:theme="@style/Theme.WearWeather" android:parentActivityName=".view.LoginActivity" android:label="포스트 작성하기"/>
+        <activity
+            android:name=".view.BoardInputActivity"
+            android:label="포스트 작성하기"
+            android:parentActivityName=".view.LoginActivity"
+            android:theme="@style/Theme.WearWeather" />
         <activity android:name=".view.BoardListActivity" />
-        <activity android:name=".view.SplashActivity" android:theme="@style/Theme.WearWeather.splash">
+        <activity
+            android:name=".view.SplashActivity"
+            android:theme="@style/Theme.WearWeather.splash">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <activity android:name=".view.ImageTagActivity" >
+        <activity android:name=".view.ImageTagActivity">
 
         </activity>
-        <activity android:name=".main.ui.MainAddLocationActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".detail.ui.DetailActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".post.ui.ImageDisplayActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".post.ui.UploadActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+        <activity
+            android:name=".main.ui.MainAddLocationActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".detail.ui.DetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".post.ui.ImageDisplayActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".post.ui.UploadActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <!-- google place api -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBPYO6buB1p5jKem34kVbLraTcazzQDeaM" />
+        <!-- google service -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
 
     </application>
 

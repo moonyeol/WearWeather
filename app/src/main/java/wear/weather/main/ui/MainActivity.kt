@@ -3,15 +3,12 @@ package wear.weather.main.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
@@ -27,13 +24,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import jp.wasabeef.blurry.Blurry
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
-import wear.weather.databinding.FragmentLocationListBinding
 import wear.weather.post.ui.ImageDisplayActivity
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
@@ -143,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             0.5f
         )
             .run {
-                this.duration = 250
+                this.duration = 200
                 this.fillAfter = true
                 binding.btnLocation.startAnimation(this)
                 beforeRotaion = i

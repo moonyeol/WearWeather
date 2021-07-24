@@ -1,48 +1,81 @@
-package wear.weather.main.adapter
-
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import wear.weather.R
-import wear.weather.main.model.CurrentWeatherData
 
-class MainAddLocationAdapter(private val items: ArrayList<CurrentWeatherData>) :
-    RecyclerView.Adapter<MainAddLocationAdapter.LocationItemViewHolder>() {
+class MainAddLocationAdapter(
+    val mContext: Context,
+    val resource: Int,
+    private val items: MutableList<String>
+) : ArrayAdapter<String>(
+    mContext, resource, items
+), Filterable {
+    private lateinit var suggestions : MutableList<String>
 
-    inner class LocationItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private lateinit var tvLocation: TextView
-        private lateinit var tvTime: TextView
-        private lateinit var tvTemp: TextView
-        private lateinit var tvWeather: TextView
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        fun bind(item: CurrentWeatherData) {
-            tvLocation = itemView.findViewById(R.id.item_tv_location)
-            tvTime = itemView.findViewById(R.id.item_tv_time)
-            tvTemp = itemView.findViewById(R.id.item_tv_temp)
-            tvWeather = itemView.findViewById(R.id.item_tv_weather)
-            tvLocation.text = item.location
-            tvTime.text = item.time
-            tvTemp.text = item.temp.toString()
-            tvWeather.text = item.weatherMain
-            Log.d("TAG", "bind: fff")
+        val view = LayoutInflater.from(mContext).inflate(R.layout.item_add_location, parent, false)
+
+        val tvLocation = view.findViewById<TextView>(R.id.tv_location_name)
+
+        tvLocation.text = items[position]
+        
+        return view
+    }
+
+    // 자동완성
+    override fun getFilter() = mFilter
+
+    private var mFilter: Filter = object : Filter() {
+
+        override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
+            val results = FilterResults()
+            suggestions = mutableListOf()
+            if(constraint == null || constraint.isEmpty()){
+                suggestions.addAll(items)
+            }else{
+                val filterPattern = constraint.toString().trim()
+                items.forEach {
+                    if (it.contains(filterPattern)){
+                        suggestions.add(it)
+
+                        Log.d(TAG, "performFiltering: true")
+                    }
+                    else{
+                        Log.d(TAG, "performFiltering: false")
+                        Log.d(TAG, "it.location: $it  filterPattern: $filterPattern")
+                    }
+                }
+            }
+
+            results.values = suggestions
+            results.count = suggestions.size
+
+            return results
+        }
+
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            Log.d(TAG, "publishResults: ")
+            clear()
+            addAll((results!!.values) as MutableList<String>)
+            notifyDataSetChanged()
+        }
+
+        override fun convertResultToString(resultValue: Any?): CharSequence {
+            Log.d(TAG, "convertResultToString resultValue: $resultValue")
+            return resultValue as String
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationItemViewHolder =
-        LocationItemViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_add_location, parent, false
-            )
-        )
-    override fun onBindViewHolder(holder: LocationItemViewHolder, position: Int) {
-        val item = items[position]
-        holder.apply { bind(item) }
+    companion object {
+        private const val TAG = "MainAddLocationAdapter"
     }
-
-    override fun getItemCount(): Int = items.size
-
 }

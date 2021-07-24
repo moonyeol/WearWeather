@@ -1,6 +1,6 @@
 package wear.weather.main.ui
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +15,6 @@ import wear.weather.R
 import wear.weather.databinding.FragmentLocationListBinding
 import wear.weather.main.adapter.MainLocationAdapter
 import wear.weather.main.model.LocationData
-import kotlin.math.log
 
 class MainLocationListFragment : Fragment() {
 
@@ -29,7 +28,7 @@ class MainLocationListFragment : Fragment() {
     ): View {
         Log.d(TAG, "onCreateView: ")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_list, container, false)
-
+        binding.btnAddLocation.setOnClickListener { startActivity(Intent(activity!!.applicationContext,MainAddLocationActivity::class.java)) }
         return binding.root
     }
 
