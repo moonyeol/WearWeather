@@ -104,4 +104,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="todo">TODO</string>
+
+    <!-- kakao native app key -->
+    <string name="WearWearther"></string>
+    <string name="kakao_app_key">54f094439a6760b5b14dbf52b6059d84</string>
+
+    <!-- naver-->
+    <string name="naver_client_id">PIS_EzQAfG9a9QCEi3OV</string>
+    <string name="naver_client_secret">Ka6PBOXrJZ</string>
+    <string name="naver_client_name">WearWeather</string>
 </resources>

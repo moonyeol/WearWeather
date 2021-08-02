@@ -60,6 +60,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx:19.2.1'
 
+    //kakao, 2021년 6월 30일 기준 최신
+    implementation group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    implementation "com.kakao.sdk:v2-user:2.0.3" // 카카오 로그인, 사용자 관리
+
+    //naver,
+    implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.6'
+
 
 
     // retrofit
