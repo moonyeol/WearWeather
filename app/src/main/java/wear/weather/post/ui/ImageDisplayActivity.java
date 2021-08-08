@@ -72,9 +72,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
         binding.imgToolbar.setNavigationIcon(R.drawable.ic_back);
         binding.imgToolbar.setNavigationOnClickListener(v -> finish());
 
-        //getDisplay~~
-        binding.cropImageView.setMaxCropResultSize(300, 400);
-        binding.cropImageView.setMinCropResultSize(300, 400);
+
         initializeBitmap();
 
         setImageDisplay();
@@ -397,8 +395,8 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private void setCropImageView() {
         binding.cropImageView.setImageBitmap(bm);
+        binding.cropImageView.setAspectRatio(3, 4);
         binding.cropImageView.setFixedAspectRatio(true);
-//        binding.cropImageView.setFixedAspectRatio(false);
         binding.cropImageView.setGuidelines(CropImageView.Guidelines.ON);
         binding.cropImageView.setVisibility(View.VISIBLE);
 
