@@ -28,6 +28,8 @@ class MainLocationListFragment : Fragment() {
     ): View {
         Log.d(TAG, "onCreateView: ")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_location_list, container, false)
+
+        // 위치 추가 Activity로 이동
         binding.btnAddLocation.setOnClickListener { startActivity(Intent(activity!!.applicationContext,MainAddLocationActivity::class.java)) }
         return binding.root
     }
@@ -35,10 +37,15 @@ class MainLocationListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Log.d(TAG, "onActivityCreated: ")
+
+
+        // test code
         val tmpArr = ArrayList<LocationData>()
         tmpArr.add(LocationData("서울","2020-06-11","sunny","15˚"))
         tmpArr.add(LocationData("부산","2020-06-11","sunny","15˚"))
         tmpArr.add(LocationData("구미","2020-06-11","sunny","15˚"))
+
+
         mainLocationAdapter = MainLocationAdapter(tmpArr)
         binding.recyclerLocation.setHasFixedSize(true)
         binding.recyclerLocation.adapter = mainLocationAdapter

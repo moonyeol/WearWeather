@@ -32,12 +32,19 @@ class MainFragment00 : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_00, container, false)
-
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+
+        val (curLat, curLot) = arrayListOf(
+            MainActivity.lat.toString(),
+            MainActivity.lot.toString()
+        )
+        getCurrentWeather(curLat, curLot)
+        binding.tvCurFineDustGrade.text = pm10Grade
 
         binding.btnShowDetail.setOnClickListener {
             Log.d(TAG, "onActivityCreated: lot: ${MainActivity.lat}")
@@ -99,21 +106,17 @@ class MainFragment00 : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume: ")
 
+/*
         val (curLat, curLot) = arrayListOf(
             MainActivity.lat.toString(),
             MainActivity.lot.toString()
         )
         getCurrentWeather(curLat, curLot)
-        binding.tvCurFineDustGrade.text = pm10Grade
+        binding.tvCurFineDustGrade.text = pm10Grade*/
     }
-
-
 
     companion object {
         private const val TAG = "MainFragment00"
-
-
     }
 }
