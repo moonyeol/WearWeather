@@ -49,7 +49,7 @@ class DetailActivity:AppCompatActivity() {
         getDailyOrHourlyWeather(lat, lot)
         getWeeklyWeather(lat, lot)
 
-        binding.tvFineDustValue.text = MainActivity.pm2_5Value.toString()
+//        binding.tvFineDustValue.text = MainActivity.pm2_5Value.toString()
 
     }
     private fun getDailyOrHourlyWeather(lat: String, lot: String) {
