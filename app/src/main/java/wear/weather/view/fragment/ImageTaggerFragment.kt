@@ -13,7 +13,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import wear.weather.R
 import wear.weather.handler.TagCallbackHandler
-import java.util.*
+import wear.weather.model.BrandTagModel
 
 class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var selectedTagFragment: TagFragment? = null
@@ -26,6 +26,7 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var mTagHeight = 142
     var mTagFragmentList: MutableList<TagFragment> =
         ArrayList<TagFragment>()
+    var brandTagList: ArrayList<BrandTagModel>? = ArrayList<BrandTagModel>()
     var mainImage: ImageView? = null
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
@@ -175,6 +176,18 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
         }
         return true
     }
+
+    fun buildListBrandTagModel(): ArrayList<BrandTagModel>? {
+        mTagFragmentList.forEach {
+            brandTagList?.add(
+                BrandTagModel(
+                    it.position?.leftMargin, it.position?.topMargin, it.editText?.text.toString()
+                )
+            )
+        }
+        return brandTagList
+    }
+
 
     companion object {
         fun newInstance(tagContainer: Int): ImageTaggerFragment {

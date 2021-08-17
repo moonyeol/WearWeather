@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import wear.weather.R
 import wear.weather.adapter.BoardInputRecyclerviewAdapter
+import wear.weather.model.BrandTagModel
 import wear.weather.model.ContentModel
 import wear.weather.model.UserModel
 
@@ -26,7 +27,7 @@ class BoardInputActivity : AppCompatActivity() {
 
     private lateinit var brand_tag_button :Button
     private lateinit var location_button :Button
-
+    private var brandTagList: ArrayList<BrandTagModel>? = null
 
 
     private val gender_array = arrayOf<String>("여자", "남자")
@@ -91,11 +92,11 @@ class BoardInputActivity : AppCompatActivity() {
                 val datInput = ContentModel(
                     uid,
                     text_form.text.toString(),
-                    keywords
+                    keywords,
+                    brandTagList
                 )
-                var post = database.push()
-                post.setValue(datInput)
-                post.key
+                database.push().setValue(datInput)
+
 
                 val intent = Intent(this,BoardListActivity::class.java)
 
@@ -107,6 +108,18 @@ class BoardInputActivity : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
         finish()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        brandTagList = intent?.getParcelableArrayListExtra("listBrandTagModel")
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        brandTagList = intent?.getParcelableArrayListExtra<BrandTagModel>("listBrandTagModel")
 
     }
 
@@ -218,8 +231,8 @@ class BoardInputActivity : AppCompatActivity() {
 
 
         brand_tag_button.setOnClickListener {
-            val intent = Intent(this,ImageTagActivity::class.java)
-
+            val intent = Intent(this,BrandTagActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
 
         }

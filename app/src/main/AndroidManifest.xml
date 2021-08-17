@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WearWeather.NoActionBar"
         android:usesCleartextTraffic="true">
+        <activity android:name=".view.PostViewActivity"></activity>
         <activity
             android:name=".main.ui.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -56,9 +57,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <activity android:name=".view.ImageTagActivity">
-
-        </activity>
+        <activity
+            android:name=".view.BrandTagActivity"
+            android:label="브랜드 태그"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".view.BoardInputActivity"
+            android:theme="@style/Theme.WearWeather"></activity>
         <activity
             android:name=".main.ui.MainAddLocationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
