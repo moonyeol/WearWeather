@@ -23,7 +23,7 @@ import wear.weather.main.ui.MainActivity
 import wear.weather.main.ui.MainActivity.Companion.currentPhotoPath
 import wear.weather.main.ui.MainFragment01
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_WEATHER_HOURLY_WEEKLY_URL
+import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.OPEN_WEATHER_KEY
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,18 +46,19 @@ class DetailActivity:AppCompatActivity() {
         val intent = intent
         val (lat,lot) = arrayOf(intent.getStringExtra("lat").toString(),intent.getStringExtra("lot").toString())
 
-        getHourlyWeather(lat, lot)
+        getDailyOrHourlyWeather(lat, lot)
         getWeeklyWeather(lat, lot)
-        binding.tvFineDustValue.text = MainActivity.pm2_5Value.toString()
+
+//        binding.tvFineDustValue.text = MainActivity.pm2_5Value.toString()
 
     }
-    private fun getHourlyWeather(lat: String, lot: String) {
+    private fun getDailyOrHourlyWeather(lat: String, lot: String) {
         val hourWeatherArr = ArrayList<HourlyWeatherData>()
 
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(OPEN_WEATHER_HOURLY_WEEKLY_URL)
-            .getHourlyWeather(lat, lot, "current,minutely,daily", OPEN_WEATHER_KEY)
+            .buildRetrofit(OPEN_WEATHER_URL)
+            .getDailyOrHourlyWeather(lat, lot, "current,minutely,daily", OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!
@@ -67,17 +68,17 @@ class DetailActivity:AppCompatActivity() {
                 for (i in 0 until 25 step 3) {
                     val hourlyWeather = hourlyJsonArr[i]
 
-                    // 자외선 습도 풍속
-                    if (i == 0) {
-                        binding.tvUvValue.text = hourlyWeather.asJsonObject["uvi"].asString
-                    }
                     val dt = hourlyWeather.asJsonObject["dt"].asLong
                     val simpleDateFormat = SimpleDateFormat("HH")
                     val time = if (i == 0) "지금" else simpleDateFormat.format(Date(dt * 1000))
                     val weather =
                         hourlyWeather.asJsonObject["weather"].asJsonArray[0].asJsonObject["main"].toString()
                     val temp = (hourlyWeather.asJsonObject["temp"].asDouble - 273.15).toInt()
-                    hourWeatherArr.add(HourlyWeatherData(time, weather, 1.1, "${temp.toString()}˚"))
+
+                    val humidity = hourlyWeather.asJsonObject["humidity"].asInt
+
+
+                    hourWeatherArr.add(HourlyWeatherData(time, weather, 1.1, "$temp˚"))
                 }
                 val mainHourlyWeatherAdapter = MainHourlyWeatherAdapter(hourWeatherArr)
                 binding.recyclerHourlyWeather.adapter = mainHourlyWeatherAdapter
@@ -95,18 +96,21 @@ class DetailActivity:AppCompatActivity() {
 
         val res: Call<JsonObject> = RetrofitClient
             .getInstance()
-            .buildRetrofit(OPEN_WEATHER_HOURLY_WEEKLY_URL)
-            .getHourlyWeather(lat, lot, "current,minutely,hourly", OPEN_WEATHER_KEY)
+            .buildRetrofit(OPEN_WEATHER_URL)
+            .getDailyOrHourlyWeather(lat, lot, "current,minutely,hourly", OPEN_WEATHER_KEY)
         res.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 val body = response.body()!!
                 // 날짜는 인덱스 별로 1일 단위
                 val weeklyJsonArr = body.get("daily").asJsonArray
-                for (i in 0 until 6) {
+                for (i in 0 until 8) {
+
                     val weeklyWeather = weeklyJsonArr[i]
                     val dt = weeklyWeather.asJsonObject["dt"].asLong
                     val simpleDateFormat = SimpleDateFormat("yyyyMMdd")
                     val tmpDate = simpleDateFormat.format(Date(dt * 1000))//20210314
+
+                    Log.d(TAG, "time: $tmpDate i:$i")
                     val date = simpleDateFormat.parse(tmpDate)
                     val calendar = Calendar.getInstance()
                     calendar.time = date
@@ -121,6 +125,21 @@ class DetailActivity:AppCompatActivity() {
                             7 -> "토"
                             else -> "error"
                         }
+
+                    if (i == 0) {
+                        // 자외선 습도 풍속
+                        val uviValue = weeklyWeather.asJsonObject["uvi"].asInt
+                        val windSpeed = weeklyWeather.asJsonObject["wind_speed"].asInt
+
+                        binding.tvUvValue.text = "이게 자외선: $uviValue"
+//                        Log.d(TAG, "time: $tmpDate")
+                        Log.d(TAG, "uviValue: $uviValue")
+                        Log.d(TAG, "windSpeed: $windSpeed")
+
+
+                    }
+
+
                     val weather =
                         weeklyWeather.asJsonObject["weather"].asJsonArray[0].asJsonObject["main"].toString()
                     val temp = weeklyWeather.asJsonObject["temp"]
@@ -141,7 +160,7 @@ class DetailActivity:AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(Companion.TAG, "onFailure: ")
+                Log.d(TAG, "onFailure: ")
             }
         })
     }

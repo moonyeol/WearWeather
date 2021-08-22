@@ -2,7 +2,6 @@
 <layout>
 
     <data>
-
         <variable
             name="activity"
             type="wear.weather.detail.ui.DetailActivity" />
