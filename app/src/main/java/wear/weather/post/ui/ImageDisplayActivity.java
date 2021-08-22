@@ -429,6 +429,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
             binding.btnNext.setVisibility(View.GONE);
             binding.tvImgEdit.setVisibility(View.GONE);
             binding.imgToolbar.setNavigationIcon(null);
+
             setCropImageView();
         } else {
             editStatus = "brightness";

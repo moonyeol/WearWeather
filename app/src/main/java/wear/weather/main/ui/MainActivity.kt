@@ -1,6 +1,5 @@
 package wear.weather.main.ui
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.*
@@ -14,27 +13,14 @@ import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
 import wear.weather.post.ui.ImageDisplayActivity
-import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
@@ -219,7 +205,6 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
 
     }
-
 
 
     override fun onRequestPermissionsResult(

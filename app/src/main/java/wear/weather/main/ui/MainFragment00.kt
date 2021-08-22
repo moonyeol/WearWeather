@@ -1,17 +1,14 @@
 package wear.weather.main.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.LocationCallback
@@ -28,8 +25,8 @@ import wear.weather.databinding.FragmentMain00Binding
 import wear.weather.detail.ui.DetailActivity
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
-import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.OPEN_WEATHER_KEY
+import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.toTemp
 import java.util.*
 
@@ -111,29 +108,29 @@ class MainFragment00 : Fragment() {
     private fun getCurrentLocation() {
         val mLocationRequest: LocationRequest = LocationRequest.create()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        Thread().join().run {
-            val mLocationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult?) {
-                    if (locationResult == null) {
-                        Log.d(TAG, "onLocationResult is null")
-                        return
-                    }
-                    for (location in locationResult.locations) {
-                        if (location != null) {
-                            curLat = location.latitude.toString()
-                            curLot = location.longitude.toString()
-                            getCurrentWeather(curLat, curLot)
-                            stationName = getStation(location.latitude, location.longitude)
-                            Log.d(TAG, "stationName: $stationName")
-                            getCurDust(stationName)
-                        }
+
+        val mLocationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                if (locationResult == null) {
+                    Log.d(TAG, "onLocationResult is null")
+                    return
+                }
+                for (location in locationResult.locations) {
+                    if (location != null) {
+                        curLat = location.latitude.toString()
+                        curLot = location.longitude.toString()
+                        getCurrentWeather(curLat, curLot)
+                        stationName = getStation(location.latitude, location.longitude)
+                        Log.d(TAG, "stationName: $stationName")
+                        getCurDust(stationName)
                     }
                 }
             }
-            LocationServices.getFusedLocationProviderClient(activityContext)
-                .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
-            LocationServices.getFusedLocationProviderClient(activityContext).lastLocation.addOnSuccessListener { location -> }
         }
+        LocationServices.getFusedLocationProviderClient(activityContext)
+            .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
+//            LocationServices.getFusedLocationProviderClient(activityContext).lastLocation.addOnSuccessListener { location -> }
+
     }
 
     private fun getStation(lat: Double, lot: Double): String {
