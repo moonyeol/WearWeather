@@ -26,18 +26,20 @@
     <Button
         android:id="@+id/naverSignInBtn"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:background="@drawable/naverlogo"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <Button
         android:id="@+id/kakaoSignInBtn"
+        android:background="@drawable/kakao_login_medium_wide"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/googleSignInBtn"
