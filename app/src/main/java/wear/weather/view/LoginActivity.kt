@@ -2,9 +2,8 @@ package wear.weather.view
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -14,35 +13,41 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import wear.weather.R
-import wear.weather.model.UserModel
+import wear.weather.databinding.ActivityLoginBinding
+import wear.weather.model.UserDTO
 
 
 class LoginActivity : AppCompatActivity() {
     var googleSignInClient : GoogleSignInClient? = null
     private lateinit var auth: FirebaseAuth
-    private lateinit var database : DatabaseReference
+    private lateinit var database : CollectionReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        var actionBar:ActionBar? = supportActionBar
+
+
+        val binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val actionBar:ActionBar? = supportActionBar
         actionBar?.setTitle("로그인")
         actionBar?.setDisplayHomeAsUpEnabled(true)
         // Google Sign-In Methods
-        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         auth = Firebase.auth
-        database = FirebaseDatabase.getInstance().getReference().child("users")
-
+        database = FirebaseFirestore.getInstance().collection("users")
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-        val signInBtn = findViewById<View>(R.id.googleSignInBtn)
+        val signInBtn = binding.googleSignInBtn
         signInBtn.setOnClickListener {
-            var signInIntent = googleSignInClient?.signInIntent
+            val signInIntent = googleSignInClient?.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
@@ -100,29 +105,28 @@ class LoginActivity : AppCompatActivity() {
 
             }
     }
-    private fun updateUI (userModel: UserModel?) {
-        val intent = Intent(this, PermissionActivity::class.java)
-        intent.putExtra("usermodel",userModel)
-        startActivity(intent)
-    }
+
 
     private fun checkNick(user: FirebaseUser?){
-        database.orderByChild("uid").equalTo(user?.uid).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                //실패 시
+        database.document(user!!.uid).get().addOnSuccessListener {
+            if(it.exists()){
+                Log.d("NICKs", "닉네임 존재함");
+                val userModel = it.toObject(UserDTO::class.java)
+                updateUI(userModel)
+            }else{
+                Log.d("NICKs", "닉네임 입력해야됨");
+                updateUI(user)
             }
+        }.addOnFailureListener {
+            Log.d("NICKs", "get failed with ", it)
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    Log.d("NICKs", "닉네임 존재함");
-                    val userModel = snapshot.getValue(UserModel::class.java)
-                    updateUI(userModel)
-                } else {
-                    Log.d("NICKs", "닉네임 입력해야됨");
-                    updateUI(user)
-                }
-            }
-        })
+        }
+    }
+
+    private fun updateUI (userDTO: UserDTO?) {
+        val intent = Intent(this, PermissionActivity::class.java)
+        intent.putExtra("usermodel",userDTO)
+        startActivity(intent)
     }
 
     private fun updateUI (user: FirebaseUser?) {

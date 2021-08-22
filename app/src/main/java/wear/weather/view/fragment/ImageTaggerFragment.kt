@@ -12,8 +12,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import wear.weather.R
+import wear.weather.databinding.FragmentTaggerBinding
 import wear.weather.handler.TagCallbackHandler
-import java.util.*
+import wear.weather.model.BrandTagModel
 
 class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var selectedTagFragment: TagFragment? = null
@@ -26,6 +27,7 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var mTagHeight = 142
     var mTagFragmentList: MutableList<TagFragment> =
         ArrayList<TagFragment>()
+    var brandTagList: ArrayList<BrandTagModel>? = ArrayList<BrandTagModel>()
     var mainImage: ImageView? = null
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
@@ -41,13 +43,14 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val v = inflater.inflate(tagContainer, container, false)
-        mainImage = v.findViewById<View>(R.id.image_view) as ImageView
-        v.setOnTouchListener(this)
+        val binding = FragmentTaggerBinding.inflate(inflater,container,false)
+        mainImage = binding.imageView
+
+        binding.root.setOnTouchListener(this)
         for (t in mTagFragmentList) {
             t.handler = this
         }
-        v.bringToFront()
+        binding.root.bringToFront()
         mainImage!!.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             for (tag in mTagFragmentList) {
                 var x: Double
@@ -58,7 +61,7 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
                 tag.getView()?.measure(2 * mTagWidth, 2 * mTagHeight)
             }
         }
-        return v
+        return binding.root
     }
 
     fun removeTag(tag: TagFragment) {
@@ -175,6 +178,18 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
         }
         return true
     }
+
+    fun buildListBrandTagModel(): ArrayList<BrandTagModel>? {
+        mTagFragmentList.forEach {
+            brandTagList?.add(
+                BrandTagModel(
+                    it.position?.leftMargin, it.position?.topMargin, it.editText?.text.toString()
+                )
+            )
+        }
+        return brandTagList
+    }
+
 
     companion object {
         fun newInstance(tagContainer: Int): ImageTaggerFragment {

@@ -3,37 +3,42 @@ package wear.weather.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.*
-import com.google.firebase.database.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import wear.weather.R
 import wear.weather.adapter.BoardInputRecyclerviewAdapter
-import wear.weather.model.ContentModel
-import wear.weather.model.UserModel
+import wear.weather.databinding.ActivityBoardInputBinding
+import wear.weather.main.ui.MainActivity
+import wear.weather.model.BrandTagModel
+import wear.weather.model.ContentDTO
+import wear.weather.model.UserDTO
 
 
 class BoardInputActivity : AppCompatActivity() {
     private var uid: String = ""
-    private lateinit var database: DatabaseReference
-    private lateinit var text_form :EditText
+    private lateinit var database: CollectionReference
+    private lateinit var text_form: EditText
 
-    private lateinit var brand_tag_button :Button
-    private lateinit var location_button :Button
+    private lateinit var brand_tag_button: Button
+    private lateinit var location_button: Button
+    private var brandTagList: ArrayList<BrandTagModel>? = null
+    var photoUri: Uri? = null
+    var nickname: String? = null
 
-
-
-    private val gender_array = arrayOf<String>("여자", "남자")
-    private val season_array = arrayOf<String>("봄", "여름", "가을", "겨울")
-    private val weather_array = arrayOf<String>("맑음", "흐림", "비", "눈", "바람")
-    private val temperature_array = arrayOf<String>("더움", "따뜻", "선선", "쌀쌀", "추움")
-    private val situation_array = arrayOf<String>(
+    //todo 필터링 목록도 db에 저장해서 받아오기
+    private val gender_array = arrayOf("여자", "남자")
+    private val season_array = arrayOf("봄", "여름", "가을", "겨울")
+    private val weather_array = arrayOf("맑음", "흐림", "비", "눈", "바람")
+    private val temperature_array = arrayOf("더움", "따뜻", "선선", "쌀쌀", "추움")
+    private val situation_array = arrayOf(
         "데일리",
         "출근",
         "데이트",
@@ -44,7 +49,7 @@ class BoardInputActivity : AppCompatActivity() {
         "여행",
         "경조사"
     )
-    private val style_array = arrayOf<String>(
+    private val style_array = arrayOf(
         "프레피",
         "미니멀",
         "스트릿",
@@ -71,7 +76,6 @@ class BoardInputActivity : AppCompatActivity() {
     )
 
 
-
     private lateinit var keywords: MutableList<String>
 
 
@@ -86,18 +90,21 @@ class BoardInputActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.upload_next_button -> {
-                val datInput = ContentModel(
-                    uid,
+                val inputData = ContentDTO(
                     text_form.text.toString(),
-                    keywords
+                    photoUri.toString(),
+                    uid,
+                    nickname,
+                    System.currentTimeMillis(),
+                    keywords,
+                    brandTagList
                 )
-                var post = database.push()
-                post.setValue(datInput)
-                post.key
+                database.document().set(inputData)
 
-                val intent = Intent(this,BoardListActivity::class.java)
+
+                val intent = Intent(this, MainActivity::class.java)
 
                 startActivity(intent)
 
@@ -110,25 +117,42 @@ class BoardInputActivity : AppCompatActivity() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        brandTagList = intent?.getParcelableArrayListExtra("listBrandTagModel")
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        brandTagList = intent?.getParcelableArrayListExtra<BrandTagModel>("listBrandTagModel")
+
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_board_input)
-        if (intent.hasExtra("uid")) {
-            uid = intent.getStringExtra("uid")!!
-        } else {
-            Log.w("BoardInputActivity", "signInWithCredential:failure")
-        }
+//        if (intent.hasExtra("uid")) {
+//            uid = intent.getStringExtra("uid")!!
+//        } else {
+//            Log.w("BoardInputActivity", "signInWithCredential:failure")
+//        }
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
+        keywords = mutableListOf()
 
-        keywords = mutableListOf<String>()
-        text_form = findViewById<EditText>(R.id.post_edit_content)
+        val binding = ActivityBoardInputBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val itemGender = findViewById<RecyclerView>(R.id.list_view_gender)
-        val itemSeason = findViewById<RecyclerView>(R.id.list_view_season)
-        val itemWeather = findViewById<RecyclerView>(R.id.list_view_weather)
-        val itemTemperature = findViewById<RecyclerView>(R.id.list_view_temperature)
-        val itemSituation = findViewById<RecyclerView>(R.id.list_view_situation)
-        val itemStyle = findViewById<RecyclerView>(R.id.list_view_style)
+        text_form = binding.postEditContent
+
+
+        val itemGender = binding.listViewGender
+        val itemSeason = binding.listViewSeason
+        val itemWeather = binding.listViewWeather
+        val itemTemperature = binding.listViewTemperature
+        val itemSituation = binding.listViewSituation
+        val itemStyle = binding.listViewStyle
+
 
         val gender_adapter = BoardInputRecyclerviewAdapter(this, gender_array, keywords)
         val season_adapter = BoardInputRecyclerviewAdapter(this, season_array, keywords)
@@ -137,11 +161,11 @@ class BoardInputActivity : AppCompatActivity() {
         val situation_adapter = BoardInputRecyclerviewAdapter(this, situation_array, keywords)
         val style_adapter = BoardInputRecyclerviewAdapter(this, style_array, keywords)
 
-        brand_tag_button = findViewById<Button>(R.id.brand_tag_button)
-        location_button = findViewById<Button>(R.id.location_button)
+        brand_tag_button = binding.brandTagButton
+        location_button = binding.locationButton
 
 
-        val flexboxLayoutManager = FlexboxLayoutManager(this).apply {
+        FlexboxLayoutManager(this).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
             justifyContent = JustifyContent.FLEX_START
@@ -207,27 +231,25 @@ class BoardInputActivity : AppCompatActivity() {
 
 
         //val form_button = findViewById<Button>(R.id.form_button)
-
         //val context_text = findViewById<EditText>(R.id.context_text_form)
         //val button_upload_image = findViewById<Button>(R.id.button_upload_image)
 
-        database = FirebaseDatabase.getInstance().getReference().child("board")
+        database = FirebaseFirestore.getInstance().collection("board")
         fbStorage = FirebaseStorage.getInstance()
-
-
+        FirebaseFirestore.getInstance().collection("users").document(uid).get()
+            .addOnSuccessListener {
+                nickname = it.toObject(UserDTO::class.java)?.nickname
+            }
 
 
         brand_tag_button.setOnClickListener {
-            val intent = Intent(this,ImageTagActivity::class.java)
-
+            val intent = Intent(this, BrandTagActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             startActivity(intent)
-
         }
         location_button.setOnClickListener {
 
         }
-
-
 
 
     }
@@ -268,7 +290,6 @@ class BoardInputActivity : AppCompatActivity() {
 //        }?.addOnFailureListener { Log.w("ImageUpload : ", "Fail")
 //            Toast.makeText(this, "Image Fail", Toast.LENGTH_SHORT).show()}
 //    }
-
 
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
