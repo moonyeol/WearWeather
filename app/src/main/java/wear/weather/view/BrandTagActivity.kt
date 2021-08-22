@@ -2,18 +2,10 @@ package wear.weather.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.database.DatabaseReference
 import wear.weather.R
-import wear.weather.model.ContentModel
 import wear.weather.view.fragment.ImageTaggerFragment
 
 class BrandTagActivity : AppCompatActivity(){
