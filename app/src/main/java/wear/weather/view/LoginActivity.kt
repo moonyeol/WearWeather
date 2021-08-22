@@ -16,7 +16,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import wear.weather.R
-import wear.weather.model.UserModel
+import wear.weather.databinding.ActivityBoardInputBinding
+import wear.weather.databinding.ActivityLoginBinding
+import wear.weather.model.UserDTO
 
 
 class LoginActivity : AppCompatActivity() {
@@ -27,12 +29,16 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        var actionBar:ActionBar? = supportActionBar
+
+
+        val binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val actionBar:ActionBar? = supportActionBar
         actionBar?.setTitle("로그인")
         actionBar?.setDisplayHomeAsUpEnabled(true)
         // Google Sign-In Methods
-        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
@@ -40,9 +46,9 @@ class LoginActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance().getReference().child("users")
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-        val signInBtn = findViewById<View>(R.id.googleSignInBtn)
+        val signInBtn = binding.googleSignInBtn
         signInBtn.setOnClickListener {
-            var signInIntent = googleSignInClient?.signInIntent
+            val signInIntent = googleSignInClient?.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
@@ -100,9 +106,9 @@ class LoginActivity : AppCompatActivity() {
 
             }
     }
-    private fun updateUI (userModel: UserModel?) {
+    private fun updateUI (userDTO: UserDTO?) {
         val intent = Intent(this, PermissionActivity::class.java)
-        intent.putExtra("usermodel",userModel)
+        intent.putExtra("usermodel",userDTO)
         startActivity(intent)
     }
 
@@ -115,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     Log.d("NICKs", "닉네임 존재함");
-                    val userModel = snapshot.getValue(UserModel::class.java)
+                    val userModel = snapshot.getValue(UserDTO::class.java)
                     updateUI(userModel)
                 } else {
                     Log.d("NICKs", "닉네임 입력해야됨");

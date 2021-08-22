@@ -1,47 +1,47 @@
 package wear.weather.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.AlignSelf
 import com.google.android.flexbox.FlexboxLayoutManager
 import wear.weather.R
+import wear.weather.databinding.ItemDetailBinding
+import wear.weather.databinding.ItemListviewButtonBinding
 
 
 class BoardInputRecyclerviewAdapter(val context: Context, val list: Array<String>, val filters:MutableList<String>):
-    RecyclerView.Adapter<BoardInputRecyclerviewAdapter.ViewHolder>() {
+    RecyclerView.Adapter<BoardInputRecyclerviewAdapter.CustomViewHolder>() {
     override fun getItemCount(): Int {
         return list.size
     }
 
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val lp: ViewGroup.LayoutParams = holder.itemView.layoutParams
         if (lp is FlexboxLayoutManager.LayoutParams) {
             lp.flexGrow = 0F
         }
-
         holder.bind(list[position])
 
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
 
         val view = LayoutInflater.from(context).inflate(
-            R.layout.listview_button_item,
+            R.layout.item_listview_button,
             parent,
             false
         )
-        return ViewHolder(view)
+        val binding = ItemListviewButtonBinding.inflate(LayoutInflater.from(parent.context), parent, true)
+        return CustomViewHolder(binding)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val button: Button = view.findViewById(R.id.list_item)
+    inner class CustomViewHolder(private val binding: ItemListviewButtonBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        private val button: Button = binding.listItem
 
         fun bind(item: String) {
             button.text = item
@@ -54,11 +54,6 @@ class BoardInputRecyclerviewAdapter(val context: Context, val list: Array<String
                     filters.remove(button.text.toString())
 
                 }
-//                if(button.text in  filters){
-//                    filters.remove(button.text.toString())
-//                }else{
-//                    filters.add(button.text.toString())
-//                }
 
             }
         }

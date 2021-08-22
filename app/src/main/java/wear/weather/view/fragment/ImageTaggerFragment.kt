@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import wear.weather.R
+import wear.weather.databinding.FragmentTaggerBinding
 import wear.weather.handler.TagCallbackHandler
 import wear.weather.model.BrandTagModel
 
@@ -42,13 +43,14 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val v = inflater.inflate(tagContainer, container, false)
-        mainImage = v.findViewById<View>(R.id.image_view) as ImageView
-        v.setOnTouchListener(this)
+        val binding = FragmentTaggerBinding.inflate(inflater,container,false)
+        mainImage = binding.imageView
+
+        binding.root.setOnTouchListener(this)
         for (t in mTagFragmentList) {
             t.handler = this
         }
-        v.bringToFront()
+        binding.root.bringToFront()
         mainImage!!.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             for (tag in mTagFragmentList) {
                 var x: Double
@@ -59,7 +61,7 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
                 tag.getView()?.measure(2 * mTagWidth, 2 * mTagHeight)
             }
         }
-        return v
+        return binding.root
     }
 
     fun removeTag(tag: TagFragment) {

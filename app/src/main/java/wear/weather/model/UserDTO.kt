@@ -2,8 +2,6 @@ package wear.weather.model
 
 import java.io.Serializable
 
-class UserModel (
-    var uid : String = "",
-    var email : String = "",
+class UserDTO (
     var nickname : String = ""
 ) : Serializable

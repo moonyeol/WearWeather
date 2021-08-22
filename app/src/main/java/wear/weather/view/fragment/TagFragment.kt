@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import wear.weather.R
+import wear.weather.databinding.FragmentTagBinding
 import wear.weather.handler.TagCallbackHandler
 
 class TagFragment : Fragment(), OnTouchListener {
@@ -35,24 +36,24 @@ class TagFragment : Fragment(), OnTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v = inflater.inflate(R.layout.fragment_tag, container, false)
+        val binding = FragmentTagBinding.inflate(inflater,container,false)
+//        val v = inflater.inflate(R.layout.fragment_tag, container, false)
         val tagTextView: TextView
         if (position != null) {
-            v.layoutParams = position
+            binding.root.layoutParams = position
         }
         val self: TagFragment = this
-        mainImageView = v.findViewById<View>(R.id.main_image_view) as ImageView
+        mainImageView = binding.mainImageView
         mainImageView!!.setOnTouchListener(this)
 
-
-        editText = v.findViewById<View>(R.id.tag_edit_text) as EditText
-        tagTextView = v.findViewById<View>(R.id.tag_text_view) as TextView
+        editText = binding.tagEditText
+        tagTextView = binding.tagTextView
         if (data != null) tagTextView!!.text = data.toString()
-        closeImageView = v.findViewById<View>(R.id.close_image_view) as ImageView
+        closeImageView = binding.closeImageView
         closeImageView!!.setOnClickListener { handler!!.onTagEvent(self, "CloseClicked", null) }
         setSelected(true)
         handler!!.onTagCreated(this)
-        return v
+        return binding.root
     }
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {

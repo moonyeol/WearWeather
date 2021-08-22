@@ -106,7 +106,7 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
                 val bundle = Bundle()
 
                 bundle.putString("destinationUid", contentDTO.uid)
-                bundle.putString("userId", contentDTO.userId)
+                bundle.putString("nickname", contentDTO.nickname)
 
                 fragment.arguments = bundle
 
@@ -115,8 +115,8 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
                 .commit()*/
             }
 
-            // 유저 아이디
-            binding.itemImageWithProfile.detailviewitemProfileTextview.text = contentDTO.userId
+            // 유저 닉네임
+            binding.itemImageWithProfile.detailviewitemProfileTextview.text = contentDTO.nickname
 
             // 가운데 이미지
             Glide.with(binding.itemImageWithProfile.detailviewitemImageviewContent.context)

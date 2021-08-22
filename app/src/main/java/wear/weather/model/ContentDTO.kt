@@ -6,12 +6,13 @@ import java.util.HashMap
 data class ContentDTO(var explain: String? = null,
                       var imageUrl: String? = null,
                       var uid: String? = null,
-                      var userId: String? = null,
+                      var nickname: String? = null,
                       var timestamp: Long? = null,
-                      var favoriteCount: Int = 0,
-                      var favorites: MutableMap<String, Boolean> = HashMap(),
                       var filters : List<String>?,
-                      var brandTagList: List<BrandTagModel>
+                      var brandTagList: List<BrandTagModel>?,
+                      var favoriteCount: Int = 0,
+                      var favorites: MutableMap<String, Boolean> = HashMap()
+
 ) {
 
     data class Comment(var uid: String? = null,

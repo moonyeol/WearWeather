@@ -21,7 +21,7 @@ class DetailViewFragment : Fragment() {
     var okHttpClient: OkHttpClient? = null
     var mainView: RecyclerView? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val fragmentDetailBinding: FragmentDetailBinding = FragmentDetailBinding.inflate(layoutInflater)
+        val fragmentDetailBinding: FragmentDetailBinding = FragmentDetailBinding.inflate(inflater,container,false)
         mainView = fragmentDetailBinding.detailviewfragmentRecyclerview
 
         user = FirebaseAuth.getInstance().currentUser

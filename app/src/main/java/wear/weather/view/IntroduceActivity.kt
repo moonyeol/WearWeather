@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
 import wear.weather.R
 import wear.weather.adapter.ViewPagerAdapter
+import wear.weather.databinding.ActivityIntroduceBinding
 
 class IntroduceActivity : AppCompatActivity() {
     //  viewpager
@@ -20,14 +21,16 @@ class IntroduceActivity : AppCompatActivity() {
     private lateinit var indicator3_iv_main: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_introduce)
-        viewPager_introduce = findViewById(R.id.viewPager_introduce)
-        indicator0_iv_main = findViewById(R.id.indicator0_iv_main)
-        indicator1_iv_main = findViewById(R.id.indicator1_iv_main)
-        indicator2_iv_main = findViewById(R.id.indicator2_iv_main)
-        indicator3_iv_main = findViewById(R.id.indicator3_iv_main)
+        val binding = ActivityIntroduceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        viewPager_introduce = binding.viewPagerIntroduce
+        indicator0_iv_main = binding.indicator0IvMain
+        indicator1_iv_main = binding.indicator1IvMain
+        indicator2_iv_main = binding.indicator2IvMain
+        indicator3_iv_main = binding.indicator3IvMain
 
-        val signInButton:Button = findViewById(R.id.introduce_sign_in_button)
+
+        val signInButton:Button = binding.introduceSignInButton
 
         val pagerAdapter = ViewPagerAdapter(supportFragmentManager)
         pagerAdapter.createFragment()

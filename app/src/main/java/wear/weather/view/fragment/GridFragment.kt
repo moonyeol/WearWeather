@@ -15,7 +15,7 @@ class GridFragment : Fragment() {
     var imagesSnapshot  : ListenerRegistration? = null
     lateinit var fragmentGridBinding: FragmentGridBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        fragmentGridBinding = FragmentGridBinding.inflate(layoutInflater)
+        fragmentGridBinding = FragmentGridBinding.inflate(inflater,container,false)
 
 
         return fragmentGridBinding.root

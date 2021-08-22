@@ -22,11 +22,11 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
 
         contentDTOs = ArrayList()
         imagesSnapshot = FirebaseFirestore
-            .getInstance().collection("images").orderBy("timestamp")
-            ?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            .getInstance().collection("board").orderBy("timestamp")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 contentDTOs.clear()
                 if (querySnapshot == null) return@addSnapshotListener
-                for (snapshot in querySnapshot!!.documents) {
+                for (snapshot in querySnapshot.documents) {
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                 }
                 notifyDataSetChanged()
@@ -58,7 +58,7 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
             val bundle = Bundle()
 
             bundle.putString("destinationUid", contentDTOs[position].uid)
-            bundle.putString("userId", contentDTOs[position].userId)
+            bundle.putString("nickname", contentDTOs[position].nickname)
 
             fragment.arguments = bundle
             (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
