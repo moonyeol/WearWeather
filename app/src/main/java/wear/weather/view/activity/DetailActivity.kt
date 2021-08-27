@@ -3,7 +3,6 @@ package wear.weather.view.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
@@ -11,34 +10,40 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.R
-import wear.weather.databinding.ActivityDetailBinding
 import wear.weather.adapter.MainHourlyWeatherAdapter
 import wear.weather.adapter.MainWeeklyWeatherAdapter
+import wear.weather.databinding.ActivityDetailBinding
 import wear.weather.model.HourlyWeatherData
 import wear.weather.model.WeeklyWeatherData
 import wear.weather.retrofit.RetrofitClient
-import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.OPEN_WEATHER_KEY
+import wear.weather.util.OPEN_WEATHER_URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DetailActivity:AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
-        binding.activity = this
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         binding.detailToolbar.setNavigationIcon(R.drawable.ic_third)
         binding.detailToolbar.setNavigationOnClickListener {
             finish()
         }
-        binding.recyclerHourlyWeather.layoutManager = LinearLayoutManager(this@DetailActivity, RecyclerView.HORIZONTAL, false)
-        binding.recyclerWeeklyWeather.layoutManager = LinearLayoutManager(this@DetailActivity, RecyclerView.HORIZONTAL, false)
+        binding.recyclerHourlyWeather.layoutManager =
+            LinearLayoutManager(this@DetailActivity, RecyclerView.HORIZONTAL, false)
+        binding.recyclerWeeklyWeather.layoutManager =
+            LinearLayoutManager(this@DetailActivity, RecyclerView.HORIZONTAL, false)
 
         val intent = intent
-        val (lat,lot) = arrayOf(intent.getStringExtra("lat").toString(),intent.getStringExtra("lot").toString())
+        val (lat, lot) = arrayOf(
+            intent.getStringExtra("lat").toString(),
+            intent.getStringExtra("lot").toString()
+        )
 
         getDailyOrHourlyWeather(lat, lot)
         getWeeklyWeather(lat, lot)
@@ -46,6 +51,7 @@ class DetailActivity:AppCompatActivity() {
 //        binding.tvFineDustValue.text = MainActivity.pm2_5Value.toString()
 
     }
+
     private fun getDailyOrHourlyWeather(lat: String, lot: String) {
         val hourWeatherArr = ArrayList<HourlyWeatherData>()
 

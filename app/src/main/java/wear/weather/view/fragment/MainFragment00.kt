@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -20,14 +19,13 @@ import com.google.gson.JsonParser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import wear.weather.R
 import wear.weather.databinding.FragmentMain00Binding
-import wear.weather.view.activity.DetailActivity
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import wear.weather.util.OPEN_WEATHER_KEY
 import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.toTemp
+import wear.weather.view.activity.DetailActivity
 import java.util.*
 
 class MainFragment00 : Fragment() {
@@ -49,7 +47,8 @@ class MainFragment00 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_00, container, false)
+
+        binding = FragmentMain00Binding.inflate(layoutInflater, container, false)
         activityContext = activity!!.applicationContext
 
         getCurrentLocation()

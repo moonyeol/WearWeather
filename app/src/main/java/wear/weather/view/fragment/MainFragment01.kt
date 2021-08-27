@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import wear.weather.R
 import wear.weather.databinding.FragmentMain01Binding
 
 class MainFragment01 : Fragment() {
@@ -16,7 +14,7 @@ class MainFragment01 : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_01, container, false)
+        binding = FragmentMain01Binding.inflate(layoutInflater, container, false)
 
         return binding.root
     }

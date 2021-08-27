@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import wear.weather.R
@@ -41,9 +40,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.activity = this
 
         val locationListFragment = MainLocationListFragment()
         val tmpViewFragment = MainTmpFragment()

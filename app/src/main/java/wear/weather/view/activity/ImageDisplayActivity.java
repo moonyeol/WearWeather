@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -39,7 +38,6 @@ import java.util.Date;
 
 import wear.weather.R;
 import wear.weather.databinding.ActivityImageDisplayBinding;
-import wear.weather.view.activity.MainActivity;
 
 public class ImageDisplayActivity extends AppCompatActivity {
     private final static String TAG = "DEBUG_BOTTOM_NAV_UTIL";
@@ -62,8 +60,9 @@ public class ImageDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_image_display);
-        binding.setActivity(this);
+        binding = ActivityImageDisplayBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 
         context = this;
 

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CustomChipChoice" parent="@style/Widget.MaterialComponents.Chip.Choice">
-        <item name="chipBackgroundColor">@color/white</item>
-        <item name="chipStrokeColor">@color/selector_chip_choice</item>
-        <item name="chipCornerRadius">0dp</item>
-    </style>
+
 
     <style name="Theme.AppCompat.Transparent.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
