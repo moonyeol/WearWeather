@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.WearWeather" parent="Theme.AppCompat.Light">
+        <item name="android:windowLightNavigationBar">true</item>
+        <!-- required to contrast the dark buttons -->
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="elevation">0dp</item>
+        <item name="android:outlineProvider">none</item>
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+
+        </style>
+</resources>
