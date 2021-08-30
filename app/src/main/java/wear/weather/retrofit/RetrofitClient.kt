@@ -16,7 +16,7 @@ class RetrofitClient {
 
     fun buildRetrofit(url: String): RetrofitService {
         val gson = GsonBuilder().setLenient().create()
-        var retrofit: Retrofit? = null
+        var retrofit: Retrofit?
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(2, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

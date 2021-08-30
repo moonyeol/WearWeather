@@ -25,7 +25,7 @@ class CommentRecyclerViewAdapter(var contentUid: String?) : RecyclerView.Adapter
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 comments.clear()
                 if (querySnapshot == null) return@addSnapshotListener
-                for (snapshot in querySnapshot?.documents!!) {
+                for (snapshot in querySnapshot.documents) {
                     comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
                 }
                 notifyDataSetChanged()
@@ -51,7 +51,7 @@ class CommentRecyclerViewAdapter(var contentUid: String?) : RecyclerView.Adapter
             .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                 if (documentSnapshot?.data != null) {
 
-                    val url = documentSnapshot?.data!!["image"]
+                    val url = documentSnapshot.data!!["image"]
 
                         Glide.with(holder.itemView.context)
                         .load(url)

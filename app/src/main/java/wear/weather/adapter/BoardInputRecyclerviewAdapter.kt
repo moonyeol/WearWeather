@@ -7,7 +7,6 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import wear.weather.R
-import wear.weather.databinding.ItemDetailBinding
 import wear.weather.databinding.ItemListviewButtonBinding
 
 
@@ -30,11 +29,6 @@ class BoardInputRecyclerviewAdapter(val context: Context, val list: Array<String
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
 
-        val view = LayoutInflater.from(context).inflate(
-            R.layout.item_listview_button,
-            parent,
-            false
-        )
         val binding = ItemListviewButtonBinding.inflate(LayoutInflater.from(parent.context), parent, true)
         return CustomViewHolder(binding)
     }

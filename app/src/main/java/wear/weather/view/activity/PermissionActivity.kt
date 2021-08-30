@@ -6,9 +6,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import wear.weather.R
 import wear.weather.databinding.ActivityPermissionBinding
-import wear.weather.main.ui.MainActivity
+import wear.weather.view.activity.MainActivity
 
 
 class PermissionActivity  : AppCompatActivity() {

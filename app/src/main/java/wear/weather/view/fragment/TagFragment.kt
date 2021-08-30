@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import wear.weather.R
 import wear.weather.databinding.FragmentTagBinding
 import wear.weather.handler.TagCallbackHandler
 

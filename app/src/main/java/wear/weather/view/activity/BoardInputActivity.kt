@@ -16,10 +16,10 @@ import com.google.firebase.storage.FirebaseStorage
 import wear.weather.R
 import wear.weather.adapter.BoardInputRecyclerviewAdapter
 import wear.weather.databinding.ActivityBoardInputBinding
-import wear.weather.main.ui.MainActivity
 import wear.weather.model.BrandTagModel
 import wear.weather.model.ContentDTO
 import wear.weather.model.UserDTO
+import wear.weather.view.activity.MainActivity
 
 
 class BoardInputActivity : AppCompatActivity() {

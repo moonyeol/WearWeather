@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="14dp"
         tools:text="작성 일시" />
-    </>
+</LinearLayout>
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:id="@+id/layout_detail_title"-->

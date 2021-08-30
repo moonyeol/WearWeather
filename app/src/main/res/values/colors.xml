@@ -29,4 +29,6 @@
     <color name="colorImagePlaceHolder">#808080</color>
     <color name="colorDivision">#e0e0e0</color>
     <color name="colorLightGray">#f1f1f1</color>
+    <color name="gray_scale">#8affffff</color>
+
 </resources>
