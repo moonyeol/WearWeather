@@ -1,6 +1,7 @@
 package wear.weather.view.fragment
 
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,10 +12,13 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import wear.weather.R
 import wear.weather.databinding.FragmentTaggerBinding
 import wear.weather.handler.TagCallbackHandler
 import wear.weather.model.BrandTagModel
+import java.net.URI
 
 class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var selectedTagFragment: TagFragment? = null
@@ -25,6 +29,7 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     var tagDeselectedAnimation = R.anim.zoom_normal
     var mTagWidth = 142
     var mTagHeight = 142
+    lateinit var photoUri:Uri
     var mTagFragmentList: MutableList<TagFragment> =
         ArrayList<TagFragment>()
     var brandTagList: ArrayList<BrandTagModel>? = ArrayList<BrandTagModel>()
@@ -45,7 +50,14 @@ class ImageTaggerFragment : Fragment(), TagCallbackHandler, OnTouchListener {
     ): View {
         val binding = FragmentTaggerBinding.inflate(inflater,container,false)
         mainImage = binding.imageView
+        arguments?.let{
+            photoUri = Uri.parse(it.getString("photoUri"))
+        }
 
+        Glide.with(mainImage!!.context)
+            .load(photoUri)
+            .apply(RequestOptions().centerCrop())
+            .into(mainImage!!)
         binding.root.setOnTouchListener(this)
         for (t in mTagFragmentList) {
             t.handler = this

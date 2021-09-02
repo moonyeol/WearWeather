@@ -3,11 +3,15 @@ package wear.weather.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.flexbox.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -20,6 +24,8 @@ import wear.weather.model.BrandTagModel
 import wear.weather.model.ContentDTO
 import wear.weather.model.UserDTO
 import wear.weather.view.activity.MainActivity
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class BoardInputActivity : AppCompatActivity() {
@@ -31,6 +37,8 @@ class BoardInputActivity : AppCompatActivity() {
     private lateinit var location_button: Button
     private var brandTagList: ArrayList<BrandTagModel>? = null
     var photoUri: Uri? = null
+    var uploadUri: Uri? = null
+
     var nickname: String? = null
 
     //todo 필터링 목록도 db에 저장해서 받아오기
@@ -80,7 +88,6 @@ class BoardInputActivity : AppCompatActivity() {
 
 
     private var fbStorage: FirebaseStorage? = null
-    var uriPhoto: Uri? = null
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,9 +99,10 @@ class BoardInputActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.upload_next_button -> {
+                funImageUpload()
                 val inputData = ContentDTO(
                     text_form.text.toString(),
-                    photoUri.toString(),
+                    uploadUri.toString(),
                     uid,
                     nickname,
                     System.currentTimeMillis(),
@@ -153,7 +161,13 @@ class BoardInputActivity : AppCompatActivity() {
         val itemSituation = binding.listViewSituation
         val itemStyle = binding.listViewStyle
 
-
+        photoUri = Uri.parse("android.resource://wear.weather/drawable/image_temp2");
+//      photoUri = Uri.parse(intent.getStringExtra("image"))
+//      binding.postEditImage.setImageURI(photoUri)
+        Glide.with(this)
+            .load(photoUri)
+            .apply(RequestOptions().centerCrop())
+            .into(binding.postEditImage)
         val gender_adapter = BoardInputRecyclerviewAdapter(this, gender_array, keywords)
         val season_adapter = BoardInputRecyclerviewAdapter(this, season_array, keywords)
         val weather_adapter = BoardInputRecyclerviewAdapter(this, weather_array, keywords)
@@ -245,6 +259,7 @@ class BoardInputActivity : AppCompatActivity() {
         brand_tag_button.setOnClickListener {
             val intent = Intent(this, BrandTagActivity::class.java)
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.putExtra("photoUri",photoUri.toString())
             startActivity(intent)
         }
         location_button.setOnClickListener {
@@ -278,18 +293,32 @@ class BoardInputActivity : AppCompatActivity() {
 //        }
 //    }
 
-//    private fun funImageUpload(){
-//
-//        var timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-//        var imgFileName = "IMAGE_" + timeStamp + "_.png"
-//        var storageRef = fbStorage?.reference?.child("images")?.child(imgFileName)
-//
-//        storageRef?.putFile(uriPhoto!!)?.addOnSuccessListener {
-//            Log.w("ImageUpload : ", "Success")
-//            Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show()
-//        }?.addOnFailureListener { Log.w("ImageUpload : ", "Fail")
-//            Toast.makeText(this, "Image Fail", Toast.LENGTH_SHORT).show()}
-//    }
+    private fun funImageUpload() {
+
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imgFileName = "IMAGE_" + timeStamp + "_.png"
+        val storageRef = fbStorage?.reference?.child("images")?.child(imgFileName)
+        storageRef?.putFile(photoUri!!)?.continueWithTask {
+            if (!it.isSuccessful) {
+                it.exception?.let {
+                    throw it
+                }
+            }
+            storageRef.downloadUrl
+        }?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.w("ImageUpload : ", "Success")
+                Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show()
+                uploadUri = it.result
+            } else {
+                Log.w("ImageUpload : ", "Fail")
+                Toast.makeText(this, "Image Fail", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+    }
+
+
 
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

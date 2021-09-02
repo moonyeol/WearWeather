@@ -45,6 +45,10 @@ class BrandTagActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brand_tag)
         imageTaggerFragment = ImageTaggerFragment()
+        val photoUri = intent.getStringExtra("photoUri")
+        val bundle = Bundle()
+        bundle.putString("photoUri",photoUri)
+        imageTaggerFragment.arguments = bundle
         supportFragmentManager.beginTransaction().replace(R.id.brand_tag_fragment, imageTaggerFragment).commit()
 
     }

@@ -29,7 +29,7 @@ class BoardInputRecyclerviewAdapter(val context: Context, val list: Array<String
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
 
-        val binding = ItemListviewButtonBinding.inflate(LayoutInflater.from(parent.context), parent, true)
+        val binding = ItemListviewButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CustomViewHolder(binding)
     }
 

@@ -11,16 +11,15 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
+import android.widget.GridLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.kakao.usermgmt.response.model.User
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
-import wear.weather.view.fragment.MainFragment00
-import wear.weather.view.fragment.MainFragment01
-import wear.weather.view.fragment.MainLocationListFragment
-import wear.weather.view.fragment.MainTmpFragment
+import wear.weather.view.fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.system.exitProcess
@@ -30,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainFragment00: MainFragment00
     private lateinit var mainFragment01: MainFragment01
+    private lateinit var gridFragment: GridFragment
+    private lateinit var userFragment: UserFragment
     private lateinit var pickedImage: Uri
     private lateinit var fragmentTransaction: FragmentTransaction
 
@@ -146,7 +147,8 @@ class MainActivity : AppCompatActivity() {
         mainFragment00 = MainFragment00()
         fragmentTransaction.replace(R.id.main_frame_layout, mainFragment00)
             .commitAllowingStateLoss()
-
+        gridFragment = GridFragment()
+        userFragment = UserFragment()
         binding.mainBottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_first -> {
@@ -158,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_second -> {
                     mainFragment01 = MainFragment01()
                     fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame_layout, mainFragment01).commit()
+                        .replace(R.id.main_frame_layout, gridFragment).commit()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.menu_third
@@ -180,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_fifth
                 -> {
                     fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame_layout, mainFragment00).commit()
+                        .replace(R.id.main_frame_layout, userFragment).commit()
                     return@setOnNavigationItemSelectedListener true
                 }
                 else -> return@setOnNavigationItemSelectedListener false

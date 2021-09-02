@@ -45,6 +45,7 @@ import java.util.Date;
 import wear.weather.R;
 import wear.weather.databinding.ActivityImageDisplayBinding;
 import wear.weather.test.PhotoTestActivity;
+import wear.weather.view.BoardInputActivity;
 
 public class ImageDisplayActivity extends AppCompatActivity {
     private static final String TAG = "ImageDisplayActivity";
@@ -89,7 +90,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
             Glide.with(this).clear(binding.imageDisplay);
 //            byte[] imgByteArr = bitmapToByteArr();
 //            Log.d(TAG, "initButton: "+imgByteArr.length);
-            Intent intent = new Intent(mContext, PhotoTestActivity.class);
+            Intent intent = new Intent(mContext, BoardInputActivity.class);
 //            intent.putExtra("bitmap", imgByteArr);
             startActivity(intent);
 

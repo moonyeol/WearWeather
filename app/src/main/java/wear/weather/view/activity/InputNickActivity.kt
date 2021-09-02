@@ -91,7 +91,6 @@ class InputNickActivity : AppCompatActivity() {
     fun updateUI() {
         val intent = Intent(this, PermissionActivity::class.java)
 
-        intent.putExtra("usermodel", userDTO)
         startActivity(intent)
     }
 

@@ -25,7 +25,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import wear.weather.R
 import wear.weather.databinding.FragmentUserBinding
 import wear.weather.model.ContentDTO
-import wear.weather.model.FollowDTO
+import wear.weather.model.UserDTO
 import wear.weather.view.LoginActivity
 import java.util.*
 
@@ -67,7 +67,8 @@ class UserFragment : Fragment() {
             uid = arguments!!.getString("destinationUid")
 
             // 본인 계정인 경우 -> 로그아웃, Toolbar 기본으로 설정
-            if (uid != null && uid == currentUserUid) {
+            if (uid == null || uid == currentUserUid) {
+                uid = currentUserUid
                 fragmentGridBinding.accountBtnFollowSignout.text = getString(R.string.signout)
                 fragmentGridBinding.accountBtnFollowSignout.setOnClickListener {
                     startActivity(Intent(activity, LoginActivity::class.java))
@@ -76,18 +77,22 @@ class UserFragment : Fragment() {
                 }
             } else {
                 fragmentGridBinding.accountBtnFollowSignout.text = getString(R.string.follow)
-                //view.account_btn_follow_signout.setOnClickListener{ requestFollow() }
+                fragmentGridBinding.accountBtnFollowSignout.setOnClickListener{ requestFollow() }
                 // TODO 뭔가 후처리~~~~
                 fragmentGridBinding.accountBtnFollowSignout.setOnClickListener{
                     requestFollow()
-
                 }
 
             }
-
-
+        }else {
+            uid = currentUserUid
+            fragmentGridBinding.accountBtnFollowSignout.text = getString(R.string.signout)
+            fragmentGridBinding.accountBtnFollowSignout.setOnClickListener {
+                startActivity(Intent(activity, LoginActivity::class.java))
+                activity?.finish()
+                auth?.signOut()
+            }
         }
-
         // Profile Image Click Listener
         fragmentGridBinding.accountIvProfile.setOnClickListener{
             if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -131,7 +136,7 @@ class UserFragment : Fragment() {
 
     fun getFollowing() {
         followingListenerRegistration = firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-            val followDTO = documentSnapshot?.toObject(FollowDTO::class.java)
+            val followDTO = documentSnapshot?.toObject(UserDTO::class.java)
             if (followDTO == null) return@addSnapshotListener
             fragmentGridBinding.accountTvFollowerCount.text = followDTO?.followingCount.toString()
 
@@ -143,7 +148,7 @@ class UserFragment : Fragment() {
     fun getFollower() {
 
         followListenerRegistration = firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-            val followDTO = documentSnapshot?.toObject(FollowDTO::class.java)
+            val followDTO = documentSnapshot?.toObject(UserDTO::class.java)
             if (followDTO == null) return@addSnapshotListener
             fragmentGridBinding.accountTvFollowerCount.text = followDTO?.followerCount.toString()
 
@@ -174,10 +179,10 @@ class UserFragment : Fragment() {
         var tsDocFollowing = firestore!!.collection("users").document(currentUserUid!!)
         firestore?.runTransaction { transaction ->
 
-            var followDTO = transaction.get(tsDocFollowing).toObject(FollowDTO::class.java)
+            var followDTO = transaction.get(tsDocFollowing).toObject(UserDTO::class.java)
             if (followDTO == null) {
 
-                followDTO = FollowDTO()
+                followDTO = UserDTO()
                 followDTO.followingCount = 1
                 followDTO.followings[uid!!] = true
 
@@ -199,13 +204,13 @@ class UserFragment : Fragment() {
             return@runTransaction
         }
 
-        var tsDocFollower = firestore!!.collection("users").document(uid!!)
+        var tsDocFollower = firestore!!.collection("follows").document(uid!!)
         firestore?.runTransaction { transaction ->
 
-            var followDTO = transaction.get(tsDocFollower).toObject(FollowDTO::class.java)
+            var followDTO = transaction.get(tsDocFollower).toObject(UserDTO::class.java)
             if (followDTO == null) {
 
-                followDTO = FollowDTO()
+                followDTO = UserDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
 

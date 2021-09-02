@@ -13,7 +13,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import wear.weather.R
 import wear.weather.databinding.ItemDetailBinding
 import wear.weather.model.ContentDTO
-import wear.weather.model.FollowDTO
+import wear.weather.model.UserDTO
 import wear.weather.view.CommentActivity
 import wear.weather.view.fragment.UserFragment
 import java.util.*
@@ -33,7 +33,7 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         firestore?.collection("users")?.document(uid!!)?.get()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val userDTO = task.result?.toObject(FollowDTO::class.java)
+                val userDTO = task.result?.toObject(UserDTO::class.java)
                 getCotents(userDTO?.followings)
             }
         }

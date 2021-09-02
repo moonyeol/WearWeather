@@ -7,7 +7,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -129,7 +128,8 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "로그인 성공")
                     val user = auth!!.currentUser
-                    loginSuccess()
+                    checkNick(user)
+                    //loginSuccess()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -162,6 +162,7 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
     private fun updateUI (user: FirebaseUser?) {
         val intent = Intent(this, InputNickActivity::class.java)
         intent.putExtra("uid",user?.uid)
@@ -269,7 +270,6 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "GoogleActivity"
         private const val k_TAG = "LoginActivity"
-
     }
 
 }
