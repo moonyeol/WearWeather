@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -41,7 +42,9 @@ class MainFragment00 : Fragment() {
     var pm2_5Value: Int = 0
     var pm10Value: Int = 0
 
-    private lateinit var activityContext: Context
+
+    private lateinit var mActivity: FragmentActivity
+    private lateinit var mActivityContext: Context
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +52,7 @@ class MainFragment00 : Fragment() {
     ): View {
 
         binding = FragmentMain00Binding.inflate(layoutInflater, container, false)
-        activityContext = activity!!.applicationContext
+
 
         getCurrentLocation()
 
@@ -60,7 +63,7 @@ class MainFragment00 : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         binding.btnShowDetail.setOnClickListener {
-            val intent = Intent(activity!!.applicationContext, DetailActivity::class.java)
+            val intent = Intent(mActivityContext, DetailActivity::class.java)
             intent.putExtra("lat", curLat)
             intent.putExtra("lot", curLot)
             startActivity(intent)
@@ -68,6 +71,11 @@ class MainFragment00 : Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = activity!!
+        mActivityContext = mActivity.applicationContext
+    }
 
     private fun getCurrentWeather(lat: String, lot: String) {
         val res: Call<JsonObject> = RetrofitClient
@@ -98,7 +106,7 @@ class MainFragment00 : Fragment() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "onFailure: ")
+                Log.d(TAG, "onFailure: ${t.message}")
             }
         })
     }
@@ -126,14 +134,14 @@ class MainFragment00 : Fragment() {
                 }
             }
         }
-        LocationServices.getFusedLocationProviderClient(activityContext)
+        LocationServices.getFusedLocationProviderClient(mActivityContext)
             .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
 //            LocationServices.getFusedLocationProviderClient(activityContext).lastLocation.addOnSuccessListener { location -> }
 
     }
 
     private fun getStation(lat: Double, lot: Double): String {
-        val coder = Geocoder(activity?.applicationContext, Locale.KOREA)
+        val coder = Geocoder(mActivity.applicationContext, Locale.KOREA)
         val list = coder.getFromLocation(lat, lot, 10)
         Log.d(TAG, "getStation: $lat $lot")
         return list[0].subLocality

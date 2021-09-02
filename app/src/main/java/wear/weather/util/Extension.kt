@@ -1,5 +1,14 @@
 package wear.weather.util
 
+import android.content.Context
+import android.util.Log
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+
+fun wwLog(tag: String, content: String) {
+    Log.d(tag, "[wearWeather] $content")
+}
+
 fun toTemp(temp: Int): String {
     return "$temp˚"
 }
