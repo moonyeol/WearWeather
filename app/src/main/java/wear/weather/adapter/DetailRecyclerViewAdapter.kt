@@ -40,7 +40,7 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
     }
 
     fun getCotents(followers: MutableMap<String, Boolean>?) {
-        imagesSnapshot = firestore?.collection("images")?.orderBy("timestamp")
+        imagesSnapshot = firestore?.collection("board")?.orderBy("timestamp")
             ?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 contentDTOs.clear()
                 contentUidList.clear()
@@ -58,7 +58,7 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val binding = ItemDetailBinding.inflate(LayoutInflater.from(parent.context), parent, true)
+        val binding = ItemDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CustomViewHolder(binding)
     }
 

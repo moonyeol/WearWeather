@@ -8,8 +8,8 @@ data class ContentDTO(var explain: String? = null,
                       var uid: String? = null,
                       var nickname: String? = null,
                       var timestamp: Long? = null,
-                      var filters : List<String>?,
-                      var brandTagList: List<BrandTagModel>?,
+                      var filters : List<String>? = ArrayList<String>(),
+                      var brandTagList: List<BrandTagModel>? = ArrayList<BrandTagModel>(),
                       var favoriteCount: Int = 0,
                       var favorites: MutableMap<String, Boolean> = HashMap()
 

@@ -1,6 +1,7 @@
 package wear.weather.adapter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import wear.weather.R
 import wear.weather.model.ContentDTO
+import wear.weather.view.fragment.DetailViewFragment
 import wear.weather.view.fragment.UserFragment
 import java.util.*
 
@@ -27,8 +29,10 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
                 contentDTOs.clear()
                 if (querySnapshot == null) return@addSnapshotListener
                 for (snapshot in querySnapshot.documents) {
+                    Log.w("Grid",snapshot.toString())
                     contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                 }
+                Log.w("Grid contentDTOs",contentDTOs.toString())
                 notifyDataSetChanged()
             }
     }
@@ -54,7 +58,9 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
             .into(imageView)
 
         imageView.setOnClickListener {
-            val fragment = UserFragment()
+//            val fragment = UserFragment()
+            val fragment = DetailViewFragment()
+
             val bundle = Bundle()
 
             bundle.putString("destinationUid", contentDTOs[position].uid)
@@ -64,6 +70,9 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
             (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frame_layout, fragment)
                 .commit()
+//            (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
+//                .replace(R.id.main_frame_layout, fragment)
+//                .commit()
         }
     }
 
