@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.IntroduceActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager_introduce"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="parent"
+>
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        app:layout_constraintBottom_toTopOf="@+id/introduce_sign_in_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageView
+            android:id="@+id/indicator0_iv_main"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ellipse19" />
+
+        <ImageView
+            android:id="@+id/indicator1_iv_main"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/indicator0_iv_main"
+            app:layout_constraintStart_toEndOf="@+id/indicator0_iv_main"
+            app:layout_constraintTop_toTopOf="@+id/indicator0_iv_main"
+            app:srcCompat="@drawable/ellipse18" />
+
+        <ImageView
+            android:id="@+id/indicator2_iv_main"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/indicator1_iv_main"
+            app:layout_constraintStart_toEndOf="@+id/indicator1_iv_main"
+            app:layout_constraintTop_toTopOf="@+id/indicator1_iv_main"
+            app:srcCompat="@drawable/ellipse18" />
+
+        <ImageView
+            android:id="@+id/indicator3_iv_main"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/indicator2_iv_main"
+            app:layout_constraintStart_toEndOf="@+id/indicator2_iv_main"
+            app:layout_constraintTop_toTopOf="@+id/indicator2_iv_main"
+            app:srcCompat="@drawable/ellipse18" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/introduce_sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="@string/button_introduce"
+        android:fontFamily="@font/notosans_medium"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#AAD2FF"
+        android:visibility="invisible"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
