@@ -50,7 +50,7 @@ dependencies {
     // flexbox
     def flexboxVer = "2.0.1"
     implementation "com.google.android:flexbox:$flexboxVer"
-    
+
     // tedPermission
     implementation 'gun0912.ted:tedpermission:2.2.3'
 
