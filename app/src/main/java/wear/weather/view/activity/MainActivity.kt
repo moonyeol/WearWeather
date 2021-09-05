@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
+import wear.weather.model.LocationDTO
+import wear.weather.model.WeatherDTO
 import wear.weather.view.fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,11 +37,17 @@ class MainActivity : AppCompatActivity() {
     private var beforeRotation = 0f
     private var isLocationListOpen = false
 
+
+    // share data
+    private lateinit var weatherDTO: WeatherDTO
+    private lateinit var locationDTO: LocationDTO
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
 
         val locationListFragment = MainLocationListFragment()
@@ -187,6 +195,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setWeatherDTO(weatherDTO: WeatherDTO) {
+        this.weatherDTO = weatherDTO
+    }
+
+    fun getWeatherDTO(): WeatherDTO = this.weatherDTO
+
+    fun setLocationDTO(locationDTO: LocationDTO) {
+        this.locationDTO = locationDTO
+    }
+
+    fun getLocationDTO(): LocationDTO = this.locationDTO
+
+
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart: ")
@@ -227,16 +248,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK) {
             pickedImage = data!!.data!!
-/*            val filePath = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor = contentResolver.query(pickedImage, filePath, null, null, null)
-            cursor!!.moveToFirst()
-
-            if(filePath==null) {
-                Toast.makeText(this@MainActivity,"올바른 사진 파일을 선택해주세요.",Toast.LENGTH_LONG).show()
-                return
+            if (pickedImage == null) {
+                Toast.makeText(this, "올바른 사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
-            currentPhotoPath =
-                cursor.getString(cursor.getColumnIndex(filePath[0]))*/
             val i = Intent(this, ImageDisplayActivity::class.java)
             val height = this.window.decorView.height
             val width = this.window.decorView.width

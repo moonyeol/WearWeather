@@ -9,9 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import wear.weather.R
 
-import wear.weather.model.LocationData
+import wear.weather.model.LocationDTO
 
-class MainLocationAdapter(private val items: ArrayList<LocationData>) :
+class MainLocationAdapter(private val items: ArrayList<LocationDTO>) :
     RecyclerView.Adapter<MainLocationAdapter.MainLocationViewHolder>() {
 
     inner class MainLocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -20,7 +20,7 @@ class MainLocationAdapter(private val items: ArrayList<LocationData>) :
         private lateinit var ivWeather: ImageView
         private lateinit var tvTemp: TextView
 
-        fun bind(item: LocationData) {
+        fun bind(item: LocationDTO) {
             tvLocation = itemView.findViewById(R.id.item_tv_location)
             ivWeather = itemView.findViewById(R.id.item_iv_weather)
             tvTime = itemView.findViewById(R.id.item_tv_time)

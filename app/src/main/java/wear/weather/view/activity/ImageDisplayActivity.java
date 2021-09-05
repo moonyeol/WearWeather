@@ -78,6 +78,8 @@ public class ImageDisplayActivity extends AppCompatActivity {
         initToolbar();
         setImageDisplay();
         initButton();
+
+
     }
 
     private void initToolbar() {
