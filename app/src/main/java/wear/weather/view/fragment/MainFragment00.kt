@@ -21,12 +21,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import wear.weather.databinding.FragmentMain00Binding
+import wear.weather.model.LocationDTO
+import wear.weather.model.WeatherDTO
 import wear.weather.retrofit.RetrofitClient
 import wear.weather.util.OPEN_AIR_CUR_DUST_URL
 import wear.weather.util.OPEN_WEATHER_KEY
 import wear.weather.util.OPEN_WEATHER_URL
 import wear.weather.util.toTemp
 import wear.weather.view.activity.DetailActivity
+import wear.weather.view.activity.MainActivity
 import java.util.*
 
 class MainFragment00 : Fragment() {
@@ -44,6 +47,7 @@ class MainFragment00 : Fragment() {
 
 
     private lateinit var mActivity: FragmentActivity
+    private lateinit var mainActivity: MainActivity
     private lateinit var mActivityContext: Context
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +77,7 @@ class MainFragment00 : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        mainActivity = activity as MainActivity
         mActivity = activity!!
         mActivityContext = mActivity.applicationContext
     }
@@ -103,6 +108,7 @@ class MainFragment00 : Fragment() {
                 binding.tvCurPerceivedTemp.text = toTemp(feelsLike)
                 binding.tvCurTemp.text = toTemp(temp)
                 binding.tvCurMaxMinTemp.text = "${toTemp(tempMax)} / ${toTemp(tempMin)}"
+                mainActivity.setWeatherDTO(WeatherDTO(temp, feelsLike, tempMax, tempMin, weather))
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -126,6 +132,9 @@ class MainFragment00 : Fragment() {
                     if (location != null) {
                         curLat = location.latitude.toString()
                         curLot = location.longitude.toString()
+
+                        mainActivity.setLocationDTO(LocationDTO(curLat = curLat, curLot = curLot))
+
                         getCurrentWeather(curLat, curLot)
                         stationName = getStation(location.latitude, location.longitude)
                         Log.d(TAG, "stationName: $stationName")

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import wear.weather.adapter.MainLocationAdapter
 import wear.weather.databinding.FragmentLocationListBinding
-import wear.weather.model.LocationData
+import wear.weather.model.LocationDTO
 
 class MainLocationListFragment : Fragment() {
 
@@ -38,10 +38,10 @@ class MainLocationListFragment : Fragment() {
 
 
         // test code
-        val tmpArr = ArrayList<LocationData>()
-        tmpArr.add(LocationData("서울", "2020-06-11", "sunny", "15˚"))
-        tmpArr.add(LocationData("부산", "2020-06-11", "sunny", "15˚"))
-        tmpArr.add(LocationData("구미", "2020-06-11", "sunny", "15˚"))
+        val tmpArr = ArrayList<LocationDTO>()
+        tmpArr.add(LocationDTO("서울", "2020-06-11", "sunny", "15˚"))
+        tmpArr.add(LocationDTO("부산", "2020-06-11", "sunny", "15˚"))
+        tmpArr.add(LocationDTO("구미", "2020-06-11", "sunny", "15˚"))
 
 
         mainLocationAdapter = MainLocationAdapter(tmpArr)
