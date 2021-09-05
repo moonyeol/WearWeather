@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pickedImage: Uri
     private lateinit var fragmentTransaction: FragmentTransaction
 
-
-    private var beforeRotaion = 0f
+    private var beforeRotation = 0f
     private var isLocationListOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,21 +56,21 @@ class MainActivity : AppCompatActivity() {
         binding.btnLocation.setOnClickListener {
             if (!isLocationListOpen) {
                 openLocationList(locationListFragment)
-                rotationButtonAnimation(beforeRotaion + 180)
+                rotationButtonAnimation(beforeRotation + 180)
 
             } else {
                 closeLocationList(locationListFragment)
-                rotationButtonAnimation(beforeRotaion + 180)
+                rotationButtonAnimation(beforeRotation + 180)
             }
         }
         binding.tvCurLocation.setOnClickListener {
             if (!isLocationListOpen) {
                 openLocationList(locationListFragment)
-                rotationButtonAnimation(beforeRotaion + 180)
+                rotationButtonAnimation(beforeRotation + 180)
 
             } else {
                 closeLocationList(locationListFragment)
-                rotationButtonAnimation(beforeRotaion + 180)
+                rotationButtonAnimation(beforeRotation + 180)
             }
         }
         lastAPICallTime = getLastAPICallTime()
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun rotationButtonAnimation(i: Float) {
         RotateAnimation(
-            beforeRotaion,
+            beforeRotation,
             i,
             Animation.RELATIVE_TO_SELF,
             0.5f,
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 this.duration = 200
                 this.fillAfter = true
                 binding.btnLocation.startAnimation(this)
-                beforeRotaion = i
+                beforeRotation = i
             }
     }
 
@@ -210,7 +209,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -231,17 +229,22 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK) {
             pickedImage = data!!.data!!
-            val filePath = arrayOf(MediaStore.Images.Media.DATA)
+/*            val filePath = arrayOf(MediaStore.Images.Media.DATA)
             val cursor = contentResolver.query(pickedImage, filePath, null, null, null)
             cursor!!.moveToFirst()
 
+            if(filePath==null) {
+                Toast.makeText(this@MainActivity,"올바른 사진 파일을 선택해주세요.",Toast.LENGTH_LONG).show()
+                return
+            }
             currentPhotoPath =
-                cursor.getString(cursor.getColumnIndex(filePath[0]))
+                cursor.getString(cursor.getColumnIndex(filePath[0]))*/
             val i = Intent(this, ImageDisplayActivity::class.java)
             val height = this.window.decorView.height
             val width = this.window.decorView.width
             i.putExtra("height", height)
             i.putExtra("width", width)
+            i.putExtra("uri", pickedImage)
             startActivity(i)
         }
     }

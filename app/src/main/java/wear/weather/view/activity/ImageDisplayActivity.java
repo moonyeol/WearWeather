@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -25,14 +26,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +63,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     static String editStatus = "";
     private Context mContext;
     private Bitmap bitmap;
+    private Uri uri;
 
 
     @SuppressLint("RestrictedApi")
@@ -70,7 +77,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
         initToolbar();
         setImageDisplay();
-        filePathToBitmap();
         initButton();
     }
 
@@ -87,6 +93,8 @@ public class ImageDisplayActivity extends AppCompatActivity {
                 }
         );
         binding.btnNext.setOnClickListener(v -> {
+            saveBitmapInCacheDirectory();
+            Uri contentUri = cacheDirectoryFileToUri();
             Glide.with(this).clear(binding.imageDisplay);
 //            byte[] imgByteArr = bitmapToByteArr();
 //            Log.d(TAG, "initButton: "+imgByteArr.length);
@@ -94,6 +102,11 @@ public class ImageDisplayActivity extends AppCompatActivity {
 //            intent.putExtra("bitmap", imgByteArr);
             startActivity(intent);
 
+            if (contentUri != null) {
+                Intent intent = new Intent(this, PhotoTestActivity.class);
+                intent.putExtra("uri", contentUri);
+                startActivity(intent);
+            }
         });
 
         binding.optionNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -202,7 +215,26 @@ public class ImageDisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+    }
 
+    private void saveBitmapInCacheDirectory() {
+        try {
+            File cachePath = new File(this.getCacheDir(), "images");
+            cachePath.mkdirs(); // don't forget to make the directory
+            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // overwrites this image every time
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Uri cacheDirectoryFileToUri() {
+        File imagePath = new File(this.getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        Uri contentUri = FileProvider.getUriForFile(this, "wear.weather.fileprovider", newFile);
+//        Log.d(TAG, "cacheDirectoryFileToUri: " + uri.toString());
+        return contentUri;
     }
 
     private byte[] bitmapToByteArr() {
@@ -244,27 +276,23 @@ public class ImageDisplayActivity extends AppCompatActivity {
     }*/
 
     private void setImageDisplay() {
-        Glide.with(this).load(MainActivity.currentPhotoPath).into(binding.imageDisplay);
+        Uri uri = getIntent().getParcelableExtra("uri");
+        Log.d(TAG, "uriuri: " + uri.toString());
+//        Glide.with(this).load(uri).into(binding.imageDisplay);
+        Glide.with(this).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
+                bitmap = resource;
+                binding.imageDisplay.setImageBitmap(resource);
+            }
+        });
+
     }
 
     private void setImageDisplay(Bitmap bitmap) {
         Glide.with(this).load(bitmap).into(binding.imageDisplay);
     }
 
-    private void filePathToBitmap() {
-        Glide.with(this).asBitmap().load(MainActivity.currentPhotoPath).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).listener(new RequestListener<Bitmap>() {
-            @Override
-            public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                bitmap = resource;
-                return false;
-            }
-        }).submit();
-    }
 
     //Function to save image
     private void saveImage() throws Exception {
