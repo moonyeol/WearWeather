@@ -11,10 +11,12 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
+import android.widget.GridLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.kakao.usermgmt.response.model.User
 import wear.weather.R
 import wear.weather.databinding.ActivityMainBinding
 import wear.weather.model.LocationDTO
