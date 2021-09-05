@@ -35,8 +35,6 @@ class RetrofitClient {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
-
-
         return retrofit!!.create(RetrofitService::class.java)
     }
 }
