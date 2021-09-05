@@ -95,6 +95,12 @@ public class ImageDisplayActivity extends AppCompatActivity {
         binding.btnNext.setOnClickListener(v -> {
             saveBitmapInCacheDirectory();
             Uri contentUri = cacheDirectoryFileToUri();
+            Glide.with(this).clear(binding.imageDisplay);
+//            byte[] imgByteArr = bitmapToByteArr();
+//            Log.d(TAG, "initButton: "+imgByteArr.length);
+            Intent intent = new Intent(mContext, BoardInputActivity.class);
+//            intent.putExtra("bitmap", imgByteArr);
+            startActivity(intent);
 
             if (contentUri != null) {
                 Intent intent = new Intent(this, PhotoTestActivity.class);
