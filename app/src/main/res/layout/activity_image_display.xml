@@ -71,8 +71,8 @@
         android:id="@+id/optionNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemTextColor="@color/black"
         app:backgroundTint="@color/white"
+        app:itemTextColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/option_img_nav_menu" />
 

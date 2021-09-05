@@ -13,7 +13,6 @@ import wear.weather.view.activity.MainActivity
 class SplashActivity  : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.apply {
-
             systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
         }
         super.onCreate(savedInstanceState)

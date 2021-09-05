@@ -50,6 +50,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".view.BrandTagActivity"
@@ -59,14 +60,29 @@
             android:theme="@style/Theme.WearWeather"></activity>
         <activity
             android:name=".view.activity.DetailActivity"
+            android:label="상세 날씨"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".view.activity.ImageDisplayActivity"
+            android:label="이미지 편집"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity android:name=".test.PhotoTestActivity"
 
             />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="wear.weather.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths">
+            </meta-data>
+
+        </provider>
+
 
         <!-- google place api -->
         <meta-data
@@ -80,11 +96,14 @@
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+              
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth" -->
-                <data android:host="oauth"
+
+                <data 
+                    android:host="oauth"
                     android:scheme="kakao54f094439a6760b5b14dbf52b6059d84" />
             </intent-filter>
         </activity>

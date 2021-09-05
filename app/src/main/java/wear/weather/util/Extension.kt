@@ -17,6 +17,9 @@ fun toTemp(temp: String): String {
     return "$temp˚"
 }
 
+
+
+
 fun getLocationList(): MutableList<String> {
     return mutableListOf<String>(
         "서울특별시",
