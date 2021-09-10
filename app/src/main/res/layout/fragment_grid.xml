@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/famousStyle_recyclerview"
+        android:id="@+id/daily_best_style_recyclerview"
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="118dp" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gridfragment_recyclerview"

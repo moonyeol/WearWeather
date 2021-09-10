@@ -1,7 +1,9 @@
 package wear.weather.model
 
-import wear.weather.model.BrandTagModel
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableMap
 
 data class ContentDTO(var explain: String? = null,
                       var imageUrl: String? = null,
@@ -16,7 +18,7 @@ data class ContentDTO(var explain: String? = null,
 ) {
 
     data class Comment(var uid: String? = null,
-                       var userId: String? = null,
+                       var nickname: String? = null,
                        var comment: String? = null,
                        var timestamp: Long? = null)
 }

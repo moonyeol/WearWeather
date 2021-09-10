@@ -70,9 +70,6 @@ class GridFragmentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
             (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frame_layout, fragment)
                 .commit()
-//            (it.context as AppCompatActivity).supportFragmentManager.beginTransaction()
-//                .replace(R.id.main_frame_layout, fragment)
-//                .commit()
         }
     }
 

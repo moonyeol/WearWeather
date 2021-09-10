@@ -47,7 +47,6 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
                 if (querySnapshot == null) return@addSnapshotListener
                 for (snapshot in querySnapshot!!.documents) {
                     val item = snapshot.toObject(ContentDTO::class.java)!!
-                    println(item.uid)
                     if (followers?.keys?.contains(item.uid)!!) {
                         contentDTOs.add(item)
                         contentUidList.add(snapshot.id)
@@ -86,11 +85,11 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
         fun bind(contentDTO: ContentDTO, contentUid: String) {
             // Profile Image 가져오기
             contentDTO.uid?.let {
-                firestore?.collection("profileImages")?.document(it)
+                firestore?.collection("users")?.document(it)
                     ?.get()?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
 
-                            val url = task.result?.get("image")
+                            val url = task.result?.get("profileImage")
                             Glide.with(binding.itemImageWithProfile.detailviewitemProfileImage.context)
                                 .load(url)
                                 .apply(RequestOptions().circleCrop())
@@ -153,13 +152,13 @@ class DetailRecyclerViewAdapter : RecyclerView.Adapter<DetailRecyclerViewAdapter
 
         //좋아요 이벤트 기능
         private fun favoriteEvent(contentUid: String) {
-            val tsDoc = firestore?.collection("images")?.document(contentUid)
+            val tsDoc = firestore?.collection("board")?.document(contentUid)
             firestore?.runTransaction { transaction ->
 
                 val uid = FirebaseAuth.getInstance().currentUser!!.uid
                 val contentDTO = transaction.get(tsDoc!!).toObject(ContentDTO::class.java)
 
-                if (contentDTO!!.favorites.containsKey(uid) == true) {
+                if (contentDTO!!.favorites.containsKey(uid)) {
                     // Unstar the post and remove self from stars
                     contentDTO.favoriteCount -= 1
                     contentDTO.favorites.remove(uid)

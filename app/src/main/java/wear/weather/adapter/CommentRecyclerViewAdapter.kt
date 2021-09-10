@@ -1,6 +1,7 @@
 package wear.weather.adapter
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,32 +13,48 @@ import wear.weather.model.ContentDTO
 import java.util.ArrayList
 
 class CommentRecyclerViewAdapter(var contentUid: String?) : RecyclerView.Adapter<CommentRecyclerViewAdapter.CustomViewHolder>() {
-    var comments: ArrayList<ContentDTO.Comment>
+    private var comments: ArrayList<ContentDTO.Comment> = ArrayList()
     lateinit var drawable: Drawable
 
     init {
-        comments = ArrayList()
+        contentUid?.let { Log.w("Comments", it) }
+
         FirebaseFirestore
             .getInstance()
-            .collection("images")
+            .collection("board")
             .document(contentUid!!)
             .collection("comments")
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            .orderBy("timestamp")
+            .get()
+            .addOnSuccessListener {
                 comments.clear()
-                if (querySnapshot == null) return@addSnapshotListener
-                for (snapshot in querySnapshot.documents) {
-                    comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
+                for(document in it){
+                    Log.w("Comments",document.toString())
+                    comments.add(document.toObject(ContentDTO.Comment::class.java)!!)
+
                 }
                 notifyDataSetChanged()
 
             }
-            .remove()
+//            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+//                comments.clear()
+//                querySnapshot?.let { Log.w("Comments", it.toString()) }
+//
+//                if (querySnapshot == null) return@addSnapshotListener
+//                for (snapshot in querySnapshot.documents) {
+//                    Log.w("Comments",snapshot.toString())
+//                    comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
+//                }
+//                notifyDataSetChanged()
+//
+//            }
+//            .remove()
+        Log.w("Comments",comments.toString())
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-//            val view = LayoutInflater.from(parent.context)
-//                    .inflate(R.layout.item_comment, parent, false)
+
         val binding = ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return CustomViewHolder(binding)
@@ -45,19 +62,18 @@ class CommentRecyclerViewAdapter(var contentUid: String?) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         // Profile Image
-        FirebaseFirestore.getInstance()
-            .collection("profileImages")
-            .document(comments[position].uid!!)
-            .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-                if (documentSnapshot?.data != null) {
-
-                    val url = documentSnapshot.data!!["image"]
-
-                        Glide.with(holder.itemView.context)
-                        .load(url)
-                        .apply(RequestOptions().circleCrop()).into(holder.getCommentviewitemImageviewProfile())
-                }
-            }
+//        FirebaseFirestore.getInstance()
+//            .collection("users")
+//            .document(comments[position].uid!!)
+//            .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+//                if (documentSnapshot?.data != null) {
+//                    val url = documentSnapshot.data!!["profileImage"]
+//
+//                        Glide.with(holder.itemView.context)
+//                        .load(url)
+//                        .apply(RequestOptions().circleCrop()).into(holder.getCommentviewitemImageviewProfile())
+//                }
+//            }
         holder.bind(comments[position])
 
 
@@ -70,10 +86,22 @@ class CommentRecyclerViewAdapter(var contentUid: String?) : RecyclerView.Adapter
 
     class CustomViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(data: ContentDTO.Comment){
-            binding.commentviewitemTextviewProfile.text = data.userId
+            binding.commentviewitemTextviewProfile.text = data.nickname
             binding.commentviewitemTextviewComment.text = data.comment
+            // Profile Image
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(data.uid!!)
+                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                    if (documentSnapshot?.data != null) {
+                        val url = documentSnapshot.data!!["profileImage"]
+
+                        Glide.with(binding.root)
+                            .load(url)
+                            .apply(RequestOptions().circleCrop()).into(binding.commentviewitemImageviewProfile)
+                    }
+                }
         }
-        fun getCommentviewitemImageviewProfile()= binding.commentviewitemImageviewProfile
 
     }
 

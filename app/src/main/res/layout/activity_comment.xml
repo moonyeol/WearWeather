@@ -34,14 +34,6 @@
 
     <!-- Contents -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/comment_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_division"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="8dp" />
-
     <Button
         android:id="@+id/comment_btn_send"
         android:layout_width="wrap_content"
@@ -60,6 +52,14 @@
         android:layout_margin="10dp"
 
         android:layout_toLeftOf="@id/comment_btn_send" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/comment_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/toolbar_division"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="30dp" />
 
 
 </RelativeLayout>
