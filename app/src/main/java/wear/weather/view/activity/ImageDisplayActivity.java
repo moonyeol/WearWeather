@@ -63,8 +63,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
     static String editStatus = "";
     private Context mContext;
     private Bitmap bitmap;
-    private Uri uri;
-
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -97,8 +95,11 @@ public class ImageDisplayActivity extends AppCompatActivity {
         binding.btnNext.setOnClickListener(v -> {
             saveBitmapInCacheDirectory();
             Uri contentUri = cacheDirectoryFileToUri();
-            Intent intent = new Intent(mContext, BoardInputActivity.class);
-            intent.putExtra("uri",contentUri);
+
+//            Intent intent = new Intent(mContext, BoardInputActivity.class);
+            Intent intent = new Intent(mContext, PhotoTestActivity.class);
+            intent.putExtra("uri", contentUri);
+
             startActivity(intent);
         });
 
@@ -279,7 +280,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
                 binding.imageDisplay.setImageBitmap(resource);
             }
         });
-
     }
 
     private void setImageDisplay(Bitmap bitmap) {
@@ -343,9 +343,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
                 });
 
         Bitmap ret = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-
         Canvas canvas = new Canvas(ret);
-
         Paint paint = new Paint();
         paint.setColorFilter(new ColorMatrixColorFilter(cm));
         canvas.drawBitmap(bitmap, 0, 0, paint);
