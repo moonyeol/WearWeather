@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity() {
             if (pickedImage == null) {
                 Toast.makeText(this, "올바른 사진을 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
-            val i = Intent(this, ImageDisplayActivityTmp::class.java)
+            val i = Intent(this, ImageDisplayActivity::class.java)
             val height = this.window.decorView.height
             val width = this.window.decorView.width
             i.putExtra("height", height)
