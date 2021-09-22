@@ -9,5 +9,6 @@ class UserDTO (
     var followers: MutableMap<String, Boolean> = HashMap(),
 
     var followingCount: Int = 0,
-    var followings: MutableMap<String, Boolean> = HashMap()
+    var followings: MutableMap<String, Boolean> = HashMap(),
+    var profileImage : String =""
 ) : Serializable

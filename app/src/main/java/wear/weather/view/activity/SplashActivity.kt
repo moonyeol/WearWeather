@@ -17,7 +17,7 @@ class SplashActivity  : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        if(FirebaseAuth.getInstance().currentUser != null)
+
         Handler().postDelayed({
             if(FirebaseAuth.getInstance().currentUser == null){
                 startActivity(Intent(this, IntroduceActivity::class.java))

@@ -95,9 +95,11 @@ public class ImageDisplayActivity extends AppCompatActivity {
         binding.btnNext.setOnClickListener(v -> {
             saveBitmapInCacheDirectory();
             Uri contentUri = cacheDirectoryFileToUri();
+
 //            Intent intent = new Intent(mContext, BoardInputActivity.class);
             Intent intent = new Intent(mContext, PhotoTestActivity.class);
             intent.putExtra("uri", contentUri);
+
             startActivity(intent);
         });
 

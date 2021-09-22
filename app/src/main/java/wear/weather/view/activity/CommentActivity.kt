@@ -15,6 +15,7 @@ class CommentActivity : AppCompatActivity() {
     var contentUid: String? = null
     var user: FirebaseUser? = null
     var destinationUid: String? = null
+    lateinit var adapter: CommentRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activityMainBinding: ActivityCommentBinding = ActivityCommentBinding.inflate(layoutInflater)
@@ -23,41 +24,46 @@ class CommentActivity : AppCompatActivity() {
         user = FirebaseAuth.getInstance().currentUser
         destinationUid = intent.getStringExtra("destinationUid")
         contentUid = intent.getStringExtra("contentUid")
-        val comment_btn_send = activityMainBinding.commentBtnSend
-        val comment_recyclerview = activityMainBinding.commentRecyclerview
-        val comment_edit_message = activityMainBinding.commentEditMessage
-        comment_btn_send.setOnClickListener {
+        val commentBtnSend = activityMainBinding.commentBtnSend
+        val commentRecyclerview = activityMainBinding.commentRecyclerview
+        val commentEditMessage = activityMainBinding.commentEditMessage
+        var nickname : String? = null
+        FirebaseFirestore
+            .getInstance()
+            .collection("users")
+            .document(user!!.uid)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    nickname = task.result?.get("nickname") as String
+                }
+            }
+        commentBtnSend.setOnClickListener {
             val comment = ContentDTO.Comment()
 
-            comment.userId = FirebaseAuth.getInstance().currentUser!!.email
-            comment.comment = comment_edit_message.text.toString()
+            comment.nickname = nickname
+            comment.comment = commentEditMessage.text.toString()
             comment.uid = FirebaseAuth.getInstance().currentUser!!.uid
             comment.timestamp = System.currentTimeMillis()
 
             FirebaseFirestore.getInstance()
-                    .collection("images")
+                    .collection("board")
                     .document(contentUid!!)
                     .collection("comments")
                     .document()
                     .set(comment)
+                .addOnSuccessListener {
+                    adapter.notifyDataSetChanged()
+                }
 
-            comment_edit_message.setText("")
+            commentEditMessage.setText("")
 
         }
-
-        comment_recyclerview.adapter = CommentRecyclerViewAdapter(contentUid)
-        comment_recyclerview.layoutManager = LinearLayoutManager(this)
+        adapter = CommentRecyclerViewAdapter(contentUid)
+        commentRecyclerview.adapter = adapter
+        commentRecyclerview.layoutManager = LinearLayoutManager(this)
 
     }
-
-
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-
-
 
 
 }
